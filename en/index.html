@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forge — game and Windows tuning</title>
+<meta name="description" content="Forge tunes game settings to your hardware, sets Windows up for gaming and adds tools for every game. Rust, CS2, PUBG, Valorant, Dota 2 and more. Everything is reversible.">
+<meta property="og:title" content="Forge — game and Windows tuning">
+<meta property="og:description" content="Game settings for your hardware, Windows tweaks, network checks and tools for Rust, CS2, PUBG and other games.">
+<meta property="og:image" content="../assets/shots/en/settings.png">
+<link rel="icon" href="../assets/logo.png">
+<link rel="alternate" hreflang="ru" href="https://notefory0u.github.io/">
+<link rel="alternate" hreflang="en" href="https://notefory0u.github.io/en/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1013; --bg2: #131418; --panel: #18191d; --panel2: #1d1e23; --panel3: #25262c;
+    --line: rgb(255 255 255 / .07); --line2: rgb(255 255 255 / .12);
+    --text: #ececee; --muted: #9b9da6; --faint: #6b6d76; --accent: #f0a53c; --ink: #141414; --ok: #3ddc97;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0 }
+  html { scroll-behavior: smooth }
+  body { background: var(--bg); color: var(--text); font: 16px/1.55 Manrope, system-ui, sans-serif; -webkit-font-smoothing: antialiased }
+  a { color: inherit; text-decoration: none }
+  img { display: block; max-width: 100%; height: auto }
+  .wrap { width: min(1160px, 100% - 32px); margin: 0 auto }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgb(15 16 19 / .82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line) }
+  header .wrap { display: flex; align-items: center; gap: 24px; height: 64px }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px }
+  .brand img { width: 30px; height: 30px }
+  nav { display: flex; gap: 22px; margin-left: auto; color: var(--muted); font-weight: 600; font-size: 14px }
+  nav a:hover { color: var(--text) }
+  .lang { color: var(--muted); font-weight: 700; font-size: 14px }
+  .lang:hover { color: var(--text) }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 50px; padding: 0 26px; border-radius: 14px; font-weight: 700; font-size: 16px; transition: transform .15s, background .15s; cursor: pointer; border: 0 }
+  .btn-primary { background: var(--accent); color: var(--ink) }
+  .btn-primary:hover { transform: translateY(-1px); background: #f5b457 }
+  .btn-ghost { background: var(--panel3); color: var(--text) }
+  .btn-ghost:hover { background: #2d2e35 }
+  .btn-sm { height: 40px; padding: 0 18px; font-size: 14px; border-radius: 11px }
+
+  .hero { padding: 72px 0 40px; text-align: center }
+  .hero h1 { font-size: clamp(34px, 5.4vw, 60px); line-height: 1.08; font-weight: 800; letter-spacing: -.02em; max-width: 880px; margin: 0 auto }
+  .hero h1 span { color: var(--accent) }
+  .hero p.lead { color: var(--muted); font-size: clamp(16px, 2vw, 19px); max-width: 680px; margin: 20px auto 0 }
+  .hero .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px }
+  .hero .meta { color: var(--faint); font-size: 13px; margin-top: 14px }
+  .shot-main { margin: 48px auto 0; border-radius: 18px; border: 1px solid var(--line2); overflow: hidden; box-shadow: 0 40px 120px -30px rgb(240 165 60 / .25), 0 30px 80px -20px rgb(0 0 0 / .8) }
+
+  .games { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 40px }
+  .chip { padding: 8px 14px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); font-size: 14px; font-weight: 600; color: var(--muted) }
+
+  section { padding: 72px 0 }
+  h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; letter-spacing: -.015em; line-height: 1.15 }
+  .sub { color: var(--muted); margin-top: 10px; max-width: 640px }
+
+  .feature { display: grid; grid-template-columns: 1fr 1.35fr; gap: 48px; align-items: center; margin-top: 56px }
+  .feature.flip { grid-template-columns: 1.35fr 1fr }
+  .feature.flip .text { order: 2 }
+  .feature h3 { font-size: 24px; font-weight: 800; letter-spacing: -.01em }
+  .feature p { color: var(--muted); margin-top: 10px }
+  .feature ul { list-style: none; margin-top: 16px; display: grid; gap: 8px; color: var(--muted); font-size: 15px }
+  .feature li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); margin: 0 10px 2px 0 }
+  .feature img { border-radius: 14px; border: 1px solid var(--line2) }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 36px }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px }
+  .card h4 { font-size: 16px; font-weight: 700 }
+  .card p { color: var(--muted); font-size: 14.5px; margin-top: 6px }
+  .card .tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em }
+
+  .honest { background: linear-gradient(180deg, var(--bg2), var(--bg)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line) }
+
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; max-width: 860px }
+  .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px }
+  .plan.pro { border-color: rgb(240 165 60 / .45); background: linear-gradient(160deg, rgb(240 165 60 / .09), var(--panel) 55%) }
+  .plan .name { font-weight: 800; font-size: 20px }
+  .plan .price { margin-top: 8px; font-size: 15px; color: var(--muted) }
+  .plan .price b { color: var(--text); font-size: 28px; font-weight: 800 }
+  .plan ul { list-style: none; margin-top: 18px; display: grid; gap: 9px; font-size: 15px }
+  .plan li { padding-left: 24px; position: relative; color: var(--muted) }
+  .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--ok); font-weight: 800 }
+  .plan .note { margin-top: 18px; font-size: 13px; color: var(--faint) }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; margin-top: 10px }
+  details summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 16px }
+  details summary::after { content: "+"; color: var(--faint); font-weight: 600 }
+  details[open] summary::after { content: "–" }
+  details p { color: var(--muted); margin-top: 10px; font-size: 15px }
+  .faq details { max-width: 860px }
+
+  .final { text-align: center }
+  .final .sub { margin: 10px auto 0 }
+  .final .cta { margin-top: 28px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap }
+  .req { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; margin-top: 22px; color: var(--faint); font-size: 13px }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0 44px; color: var(--faint); font-size: 13px }
+  footer .wrap { display: flex; gap: 18px 28px; flex-wrap: wrap; align-items: center }
+  footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-left: auto }
+  footer a:hover { color: var(--text) }
+
+  @media (max-width: 860px) {
+    nav { display: none }
+    .feature, .feature.flip { grid-template-columns: 1fr; gap: 22px }
+    .feature.flip .text { order: 0 }
+    .cards { grid-template-columns: 1fr }
+    .plans { grid-template-columns: 1fr }
+    section { padding: 52px 0 }
+    .hero { padding-top: 48px }
+    footer .links { margin-left: 0 }
+    .lang { margin-left: auto }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="../assets/logo.png" alt="">Forge</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#pro">Forge Pro</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://t.me/ForgeOptimizer" target="_blank" rel="noopener">Telegram</a>
+    </nav>
+    <a class="lang" href="../" hreflang="ru">RU</a>
+    <a class="btn btn-primary btn-sm js-download" href="https://t.me/ForgeOptimizer">Download</a>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <h1>Games and Windows, <span>tuned for your PC</span></h1>
+    <p class="lead">Forge picks graphics settings for your graphics card and processor, trims what Windows doesn't need and shows exactly what it changes. A backup comes before every change.</p>
+    <div class="cta">
+      <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm8.5-1.2L21 3v8.5h-9.5V4.3ZM3 12.5h7.5v7.1L3 18.5v-6Zm8.5 0H21V21l-9.5-1.3v-7.2Z"/></svg>
+        Download for Windows
+      </a>
+      <a class="btn btn-ghost" href="#features">What it does</a>
+    </div>
+    <div class="meta js-meta">Windows 10 and 11 · free</div>
+    <img class="shot-main" src="../assets/shots/en/settings.png" alt="Rust graphics settings in Forge: picked for this PC, with before and after previews" width="2560" height="1600">
+    <div class="games">
+      <span class="chip">Rust</span><span class="chip">Counter-Strike 2</span><span class="chip">PUBG</span><span class="chip">Valorant</span>
+      <span class="chip">Dota 2</span><span class="chip">Deadlock</span><span class="chip">Fortnite</span><span class="chip">GTA V</span><span class="chip">ROB RUN</span>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>What Forge does</h2>
+      <p class="sub">No magic “+100 FPS” buttons: Forge shows what it changes and why, and one button puts everything back.</p>
+
+      <div class="feature">
+        <div class="text">
+          <h3>Game settings for your hardware</h3>
+          <p>Every game setting on one page: “For this PC”, “Max FPS”, “Balanced” and “Visuals” sets, plus “Low latency” and “Competitive” for Rust. Each slider comes with a preview of how it changes the picture.</p>
+          <ul><li>Writes straight to the game's settings files</li><li>Explains why each value was chosen</li><li>Old settings come back with one button</li></ul>
+        </div>
+        <img src="../assets/shots/en/tweaks.png" alt="Rust tweaks in Forge" loading="lazy" width="2560" height="1600">
+      </div>
+
+      <div class="feature flip">
+        <div class="text">
+          <h3>Your PC, no guesswork</h3>
+          <p>Where your PC stands among others, what limits FPS the most and what can be fixed: the XMP memory profile, monitor refresh rate, driver, overheating, the drive the game is on.</p>
+          <ul><li>Hardware advisor and diagnostics</li><li>Windows tweaks undone with the same switch</li><li>A restore point before changes</li></ul>
+        </div>
+        <img src="../assets/shots/en/hardware.png" alt="PC analysis in Forge" loading="lazy" width="2560" height="1600">
+      </div>
+
+      <div class="feature">
+        <div class="text">
+          <h3>Network, no myths</h3>
+          <p>Speed and ping under load, ping to the game's servers by region, packet loss and a trace to the server. A DNS comparison, with an honest note that it doesn't lower in-game ping.</p>
+          <ul><li>Speed test through Cloudflare</li><li>The nearest region and a check of your own server</li><li>Only tweaks that matter for games</li></ul>
+        </div>
+        <img src="../assets/shots/en/network.png" alt="Network check in Forge" loading="lazy" width="2560" height="1600">
+      </div>
+
+      <div class="feature flip">
+        <div class="text">
+          <h3>Tools for every game</h3>
+          <p>For Rust: a raid calculator, electrical circuits, monuments, your own server. For CS2: a crosshair editor, economy and a weapon guide. PUBG, Dota 2 and Deadlock profiles, the Fortnite item shop and more.</p>
+          <ul><li>Aim warm-up, mouse and DPI test, sensitivity converter</li><li>Rust and PUBG player stats, Apex map rotation</li><li>A zapret fix for Easy Anti-Cheat games</li></ul>
+        </div>
+        <img src="../assets/shots/en/tools.png" alt="Forge tools for Rust" loading="lazy" width="2560" height="1600">
+      </div>
+    </div>
+  </section>
+
+  <section class="honest">
+    <div class="wrap">
+      <h2>No risk to the game or the system</h2>
+      <div class="cards">
+        <div class="card"><div class="tag">Reversible</div><h4>Everything comes back</h4><p>Forge copies files before writing, and every action goes into the history. Undo always works, even without a subscription.</p></div>
+        <div class="card"><div class="tag">Anti-cheats</div><h4>Settings only</h4><p>Forge changes the same settings files as the game's own menu and never touches its memory or processes. It is not a cheat or a mod.</p></div>
+        <div class="card"><div class="tag">Windows</div><h4>Protection stays on</h4><p>Forge never turns off Windows Defender, updates or important services without your consent. Every tweak says what it gives and what it costs.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pro">
+    <div class="wrap">
+      <h2>Free and Forge Pro</h2>
+      <p class="sub">Looking, learning and undoing are free. Applying changes and running checks need a subscription.</p>
+      <div class="plans">
+        <div class="plan">
+          <div class="name">Free</div>
+          <div class="price"><b>0 ₽</b></div>
+          <ul><li>Settings and hardware recommendations</li><li>Guides and tools</li><li>Undo any change Forge made</li><li>Launching games</li></ul>
+        </div>
+        <div class="plan pro">
+          <div class="name">Forge Pro</div>
+          <div class="price"><b>149 ₽</b> for 30 days · trial week 39 ₽</div>
+          <ul><li>Applying game settings and Windows tweaks</li><li>Network test, server ping, PC diagnostics</li><li>Ready-made sets together with Windows tweaks</li><li>Settings sets kept in the cloud</li></ul>
+          <div class="note">Pay by card, through SBP (Russian bank transfer) or with crypto. The subscription does not renew on its own.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap faq">
+      <h2>FAQ</h2>
+      <details><summary>Can I get banned?</summary><p>Forge only changes the game's settings files, the same thing that happens when you move sliders in its menu. It never interferes with the game's memory or processes. Before writing, it asks you to close the game so the game doesn't overwrite the files on exit.</p></details>
+      <details><summary>How many FPS will I get?</summary><p>It depends on the hardware and the game, so Forge promises nothing. It explains what each setting does, and the game itself shows FPS before and after: in Rust, for example, console F1 → perf 1.</p></details>
+      <details><summary>Do I need an account?</summary><p>You can download Forge and use the free features without an account. A subscription needs a sign-in with a code sent by e-mail.</p></details>
+      <details><summary>What if something goes wrong?</summary><p>Every change can be undone in “Settings → History and backups”, and Forge makes a restore point before Windows tweaks. If you need help, message support on Telegram.</p></details>
+      <details><summary>What are the system requirements?</summary><p>Windows 10 or 11, 64-bit. About 150 MB of disk space. Forge installs everything else itself.</p></details>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2>Try Forge</h2>
+      <p class="sub">For free: see what Forge suggests for your PC before changing anything.</p>
+      <div class="cta">
+        <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer">Download for Windows</a>
+        <a class="btn btn-ghost" href="https://t.me/ForgeOptimizer" target="_blank" rel="noopener">Telegram channel</a>
+      </div>
+      <div class="req"><span>Windows 10 / 11 · 64-bit</span><span class="js-version"></span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© Forge. Not affiliated with the game developers.</span>
+    <div class="links">
+      <a href="../legal/privacy.html">Privacy policy (in Russian)</a>
+      <a href="../legal/offer.html">Terms of service (in Russian)</a>
+      <a href="../legal/refund.html">Refund policy (in Russian)</a>
+      <a href="https://t.me/notefory0u" target="_blank" rel="noopener">Support</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // The installer link comes from the same manifest Forge itself checks for updates, so the site never lags a release.
+  const MANIFEST = 'https://qsxqkpemtpuyduudrkmc.supabase.co/storage/v1/object/public/releases/latest.json'
+  fetch(MANIFEST, { cache: 'no-store' }).then((r) => r.json()).then((m) => {
+    if (!m || !m.url) return
+    document.querySelectorAll('.js-download').forEach((a) => { a.href = m.url; a.removeAttribute('target') })
+    const mb = m.size ? ` · ${(m.size / 1048576).toFixed(0)} MB` : ''
+    document.querySelector('.js-meta').textContent = `Version ${m.version}${mb} · Windows 10 and 11 · free`
+    document.querySelector('.js-version').textContent = `Version ${m.version}`
+  }).catch(() => {})
+</script>
+</body>
+</html>

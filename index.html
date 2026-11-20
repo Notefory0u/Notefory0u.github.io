@@ -4,11 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Forge — настройка игр и Windows</title>
-<meta name="description" content="Forge подбирает настройки игр под ваше железо, меняет Windows для игр и честно замеряет FPS до и после. Rust, CS2, PUBG, Valorant, Dota 2 и другие. Всё обратимо.">
+<meta name="description" content="Forge подбирает настройки игр под ваше железо, настраивает Windows для игр и даёт инструменты для каждой игры. Rust, CS2, PUBG, Valorant, Dota 2 и другие. Всё обратимо.">
 <meta property="og:title" content="Forge — настройка игр и Windows">
-<meta property="og:description" content="Настройки игр под ваше железо, твики Windows, честный замер FPS до и после и инструменты для Rust, CS2, PUBG и других игр.">
+<meta property="og:description" content="Настройки игр под ваше железо, твики Windows, проверка сети и инструменты для Rust, CS2, PUBG и других игр.">
 <meta property="og:image" content="assets/shots/settings.png">
 <link rel="icon" href="assets/logo.png">
+<link rel="alternate" hreflang="ru" href="https://notefory0u.github.io/">
+<link rel="alternate" hreflang="en" href="https://notefory0u.github.io/en/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -31,6 +33,8 @@
   .brand img { width: 30px; height: 30px }
   nav { display: flex; gap: 22px; margin-left: auto; color: var(--muted); font-weight: 600; font-size: 14px }
   nav a:hover { color: var(--text) }
+  .lang { color: var(--muted); font-weight: 700; font-size: 14px }
+  .lang:hover { color: var(--text) }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 50px; padding: 0 26px; border-radius: 14px; font-weight: 700; font-size: 16px; transition: transform .15s, background .15s; cursor: pointer; border: 0 }
   .btn-primary { background: var(--accent); color: var(--ink) }
@@ -108,7 +112,7 @@
     section { padding: 52px 0 }
     .hero { padding-top: 48px }
     footer .links { margin-left: 0 }
-    header .btn { margin-left: auto }
+    .lang { margin-left: auto }
   }
 </style>
 </head>
@@ -122,6 +126,7 @@
       <a href="#faq">Вопросы</a>
       <a href="https://t.me/ForgeOptimizer" target="_blank" rel="noopener">Telegram</a>
     </nav>
+    <a class="lang" href="en/" hreflang="en">EN</a>
     <a class="btn btn-primary btn-sm js-download" href="https://t.me/ForgeOptimizer">Скачать</a>
   </div>
 </header>
@@ -129,7 +134,7 @@
 <main>
   <div class="hero wrap">
     <h1>Игры и Windows, <span>настроенные под ваш ПК</span></h1>
-    <p class="lead">Forge подбирает настройки графики под видеокарту и процессор, убирает лишнее из Windows и честно замеряет FPS до и после. Перед каждым изменением — резервная копия.</p>
+    <p class="lead">Forge подбирает настройки графики под видеокарту и процессор, убирает лишнее из Windows и показывает, что именно меняет. Перед каждым изменением — резервная копия.</p>
     <div class="cta">
       <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm8.5-1.2L21 3v8.5h-9.5V4.3ZM3 12.5h7.5v7.1L3 18.5v-6Zm8.5 0H21V21l-9.5-1.3v-7.2Z"/></svg>
@@ -148,12 +153,12 @@
   <section id="features">
     <div class="wrap">
       <h2>Что умеет Forge</h2>
-      <p class="sub">Без волшебных кнопок «+100 FPS»: Forge показывает, что меняет, и даёт проверить результат замером.</p>
+      <p class="sub">Без волшебных кнопок «+100 FPS»: Forge показывает, что меняет и почему, а вернуть всё можно одной кнопкой.</p>
 
       <div class="feature">
         <div class="text">
           <h3>Настройки игр под ваше железо</h3>
-          <p>Готовые наборы «Максимум FPS», «Баланс» и «Картинка» подбираются под вашу видеокарту, процессор и видеопамять. Каждый ползунок — с превью, как он меняет картинку.</p>
+          <p>Все настройки игры на одной странице: набор «Под этот компьютер», «Максимум FPS», «Баланс», «Картинка», а для Rust ещё «Низкая задержка» и «Соревновательный». Каждый ползунок — с превью, как он меняет картинку.</p>
           <ul><li>Пишет прямо в файлы настроек игры</li><li>Объясняет, почему выбран каждый параметр</li><li>Старые настройки возвращаются одной кнопкой</li></ul>
         </div>
         <img src="assets/shots/tweaks.png" alt="Твики Rust в Forge" loading="lazy" width="2560" height="1600">
@@ -170,18 +175,18 @@
 
       <div class="feature">
         <div class="text">
-          <h3>Честный замер FPS</h3>
-          <p>Бенчмарк прямо в игре: средний FPS, 1% и 0,1% low, фризы и узкое место системы. Сравнивайте замеры до и после — разница видна в цифрах, а не в обещаниях.</p>
-          <ul><li>Работает на PresentMon от Intel</li><li>Видно, во что упирается игра: процессор или видеокарта</li><li>История и сравнение замеров</li></ul>
+          <h3>Сеть без мифов</h3>
+          <p>Скорость и пинг под нагрузкой, пинг до серверов игры по регионам, потери и трассировка до сервера. Сравнение DNS — с честной пометкой, что пинг в игре он не снижает.</p>
+          <ul><li>Тест скорости через Cloudflare</li><li>Ближайший регион и проверка своего сервера</li><li>Только твики, которые влияют на игры</li></ul>
         </div>
-        <img src="assets/shots/bench.png" alt="Бенчмарк в Forge" loading="lazy" width="2560" height="1600">
+        <img src="assets/shots/network.png" alt="Проверка сети в Forge" loading="lazy" width="2560" height="1600">
       </div>
 
       <div class="feature flip">
         <div class="text">
           <h3>Инструменты для каждой игры</h3>
           <p>Для Rust — калькулятор рейдов, электросхемы, монументы, свой сервер. Для CS2 — редактор прицела, экономика и справочник оружия. Профили PUBG, Dota 2 и Deadlock, магазин Fortnite и многое другое.</p>
-          <ul><li>Разминка, тест мыши и DPI, конвертер чувствительности</li><li>Пинг до серверов игры и трассировка</li><li>Фикс zapret для игр с Easy Anti-Cheat</li></ul>
+          <ul><li>Разминка, тест мыши и DPI, конвертер чувствительности</li><li>Статистика игроков Rust и PUBG, карты Apex</li><li>Фикс zapret для игр с Easy Anti-Cheat</li></ul>
         </div>
         <img src="assets/shots/tools.png" alt="Инструменты Forge для Rust" loading="lazy" width="2560" height="1600">
       </div>
@@ -202,7 +207,7 @@
   <section id="pro">
     <div class="wrap">
       <h2>Бесплатно и Forge Pro</h2>
-      <p class="sub">Смотреть, разбираться и отменять — бесплатно. Применять изменения и делать замеры — с подпиской.</p>
+      <p class="sub">Смотреть, разбираться и отменять — бесплатно. Применять изменения и запускать проверки — с подпиской.</p>
       <div class="plans">
         <div class="plan">
           <div class="name">Бесплатно</div>
@@ -212,7 +217,7 @@
         <div class="plan pro">
           <div class="name">Forge Pro</div>
           <div class="price"><b>149 ₽</b> за 30 дней · пробная неделя 39 ₽</div>
-          <ul><li>Применение настроек игр и твиков Windows</li><li>Бенчмарк, тест сети, диагностика ПК</li><li>Автооптимизация с замером до и после</li><li>Облачное хранение наборов настроек</li></ul>
+          <ul><li>Применение настроек игр и твиков Windows</li><li>Тест сети, пинг до серверов, диагностика ПК</li><li>Готовые наборы вместе с твиками Windows</li><li>Облачное хранение наборов настроек</li></ul>
           <div class="note">Оплата картой, через СБП или криптовалютой. Подписка не продлевается сама.</div>
         </div>
       </div>
@@ -223,7 +228,7 @@
     <div class="wrap faq">
       <h2>Вопросы</h2>
       <details><summary>Меня не забанят?</summary><p>Forge меняет только файлы настроек игры — то же самое происходит, когда вы двигаете ползунки в меню. В память игры и её процессы Forge не вмешивается. Перед записью он просит закрыть игру, чтобы та не перезаписала файлы при выходе.</p></details>
-      <details><summary>Сколько FPS я получу?</summary><p>Зависит от железа и игры, поэтому Forge ничего не обещает, а предлагает замерить: сделайте замер до, примените изменения и замерьте после — в программе будет честное сравнение.</p></details>
+      <details><summary>Сколько FPS я получу?</summary><p>Зависит от железа и игры, поэтому Forge ничего не обещает. Он объясняет, что даёт каждая настройка, а FPS до и после видно в самой игре — например, в Rust консоль F1 → perf 1.</p></details>
       <details><summary>Нужен ли аккаунт?</summary><p>Скачать Forge и пользоваться бесплатными функциями можно без аккаунта. Для подписки нужен вход по коду из письма.</p></details>
       <details><summary>Что если что-то пойдёт не так?</summary><p>Каждое изменение можно отменить в «Настройки → История и копии», а перед твиками Windows Forge создаёт точку восстановления. Если нужна помощь — напишите в поддержку в Telegram.</p></details>
       <details><summary>Какие нужны системные требования?</summary><p>Windows 10 или 11, 64 бита. Около 150 МБ на диске. Всё остальное Forge устанавливает сам.</p></details>
