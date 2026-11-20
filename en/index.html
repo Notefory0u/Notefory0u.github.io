@@ -8,6 +8,7 @@
 <meta property="og:title" content="Forge — game and Windows tuning">
 <meta property="og:description" content="Game settings for your hardware, Windows tweaks, network checks and tools for Rust, CS2, PUBG and other games.">
 <meta property="og:image" content="../assets/shots/en/settings.png">
+<meta name="theme-color" content="#0b0c0f">
 <link rel="icon" href="../assets/logo.png">
 <link rel="alternate" hreflang="ru" href="https://notefory0u.github.io/">
 <link rel="alternate" hreflang="en" href="https://notefory0u.github.io/en/">
@@ -16,105 +17,400 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1013; --bg2: #131418; --panel: #18191d; --panel2: #1d1e23; --panel3: #25262c;
+    --bg: #0b0c0f; --bg2: #101115; --panel: #15161a; --panel2: #1b1c21; --panel3: #23242a; --panel4: #2c2d34;
     --line: rgb(255 255 255 / .07); --line2: rgb(255 255 255 / .12);
-    --text: #ececee; --muted: #9b9da6; --faint: #6b6d76; --accent: #f0a53c; --ink: #141414; --ok: #3ddc97;
+    --text: #ececee; --muted: #a1a3ac; --faint: #6b6d76; --accent: #f0a53c; --accent2: #ff7a2f; --ink: #141414; --ok: #3ddc97;
+    --glow: rgb(240 165 60 / .35);
   }
   * { box-sizing: border-box; margin: 0; padding: 0 }
   html { scroll-behavior: smooth }
-  body { background: var(--bg); color: var(--text); font: 16px/1.55 Manrope, system-ui, sans-serif; -webkit-font-smoothing: antialiased }
+  body { background: var(--bg); color: var(--text); font: 16px/1.55 Manrope, system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden }
   a { color: inherit; text-decoration: none }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer }
   img { display: block; max-width: 100%; height: auto }
-  .wrap { width: min(1160px, 100% - 32px); margin: 0 auto }
+  .wrap { width: min(1180px, 100% - 32px); margin: 0 auto }
+  .i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0 }
+  .i.f { fill: currentColor; stroke: none }
 
-  header { position: sticky; top: 0; z-index: 10; background: rgb(15 16 19 / .82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line) }
+  /* ---------- header ---------- */
+  header { position: sticky; top: 0; z-index: 30; background: rgb(11 12 15 / .72); backdrop-filter: blur(14px) saturate(1.4); border-bottom: 1px solid var(--line) }
   header .wrap { display: flex; align-items: center; gap: 24px; height: 64px }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px }
   .brand img { width: 30px; height: 30px }
-  nav { display: flex; gap: 22px; margin-left: auto; color: var(--muted); font-weight: 600; font-size: 14px }
-  nav a:hover { color: var(--text) }
-  .lang { color: var(--muted); font-weight: 700; font-size: 14px }
-  .lang:hover { color: var(--text) }
+  nav.top { display: flex; gap: 24px; margin-left: auto; color: var(--muted); font-weight: 600; font-size: 14px }
+  nav.top a { position: relative; transition: color .2s }
+  nav.top a:hover { color: var(--text) }
+  nav.top a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transition: transform .25s }
+  nav.top a:hover::after { transform: scaleX(1) }
+  .lang { color: var(--muted); font-weight: 700; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line2) }
+  .lang:hover { color: var(--text); border-color: var(--accent) }
 
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 50px; padding: 0 26px; border-radius: 14px; font-weight: 700; font-size: 16px; transition: transform .15s, background .15s; cursor: pointer; border: 0 }
-  .btn-primary { background: var(--accent); color: var(--ink) }
-  .btn-primary:hover { transform: translateY(-1px); background: #f5b457 }
-  .btn-ghost { background: var(--panel3); color: var(--text) }
-  .btn-ghost:hover { background: #2d2e35 }
-  .btn-sm { height: 40px; padding: 0 18px; font-size: 14px; border-radius: 11px }
+  /* ---------- buttons ---------- */
+  .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 26px; border-radius: 14px; font-weight: 700; font-size: 16px; transition: transform .2s, box-shadow .2s, background .2s; white-space: nowrap }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--ink); box-shadow: 0 10px 30px -10px var(--glow) }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -12px rgb(240 165 60 / .6) }
+  .btn-primary::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / .45) 50%, transparent 65%); transform: translateX(-120%); transition: transform .7s }
+  .btn-primary:hover::after { transform: translateX(120%) }
+  .btn-ghost { background: var(--panel3); color: var(--text); border: 1px solid var(--line2) }
+  .btn-ghost:hover { background: var(--panel4); transform: translateY(-2px) }
+  .btn-sm { height: 40px; padding: 0 16px; font-size: 14px; border-radius: 11px; gap: 8px }
+  .btn .i { width: 18px; height: 18px }
 
-  .hero { padding: 72px 0 40px; text-align: center }
-  .hero h1 { font-size: clamp(34px, 5.4vw, 60px); line-height: 1.08; font-weight: 800; letter-spacing: -.02em; max-width: 880px; margin: 0 auto }
-  .hero h1 span { color: var(--accent) }
-  .hero p.lead { color: var(--muted); font-size: clamp(16px, 2vw, 19px); max-width: 680px; margin: 20px auto 0 }
+  /* ---------- hero ---------- */
+  .hero { position: relative; padding: 72px 0 32px; text-align: center; isolation: isolate }
+  .hero-bg { position: absolute; inset: -64px 0 0; z-index: -1; overflow: hidden; pointer-events: none }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .55; animation: drift 18s ease-in-out infinite alternate }
+  .blob.a { width: 520px; height: 520px; left: 8%; top: -120px; background: radial-gradient(circle, rgb(240 165 60 / .55), transparent 70%) }
+  .blob.b { width: 460px; height: 460px; right: 6%; top: 40px; background: radial-gradient(circle, rgb(255 90 40 / .35), transparent 70%); animation-delay: -6s }
+  .blob.c { width: 380px; height: 380px; left: 40%; top: 360px; background: radial-gradient(circle, rgb(120 90 255 / .22), transparent 70%); animation-delay: -12s }
+  @keyframes drift { from { transform: translate(0, 0) scale(1) } to { transform: translate(60px, 40px) scale(1.12) } }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgb(240 165 60 / .1); border: 1px solid rgb(240 165 60 / .3); color: var(--accent); font-weight: 700; font-size: 13px }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 var(--glow); animation: ping 2s infinite }
+  @keyframes ping { 70% { box-shadow: 0 0 0 8px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+  .hero h1 { font-size: clamp(36px, 5.6vw, 66px); line-height: 1.05; font-weight: 800; letter-spacing: -.025em; max-width: 900px; margin: 20px auto 0 }
+  .hero h1 span { background: linear-gradient(120deg, var(--accent), var(--accent2) 60%, #ffd37a); -webkit-background-clip: text; background-clip: text; color: transparent }
+  .hero p.lead { color: var(--muted); font-size: clamp(16px, 2vw, 19px); max-width: 660px; margin: 20px auto 0 }
   .hero .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px }
   .hero .meta { color: var(--faint); font-size: 13px; margin-top: 14px }
   .gift { display: inline-block; margin-top: 18px; padding: 8px 16px; border-radius: 999px; background: rgb(240 165 60 / .12); border: 1px solid rgb(240 165 60 / .35); color: var(--accent); font-weight: 700; font-size: 14px }
   .gift[hidden] { display: none }
-  .shot-main { margin: 48px auto 0; border-radius: 18px; border: 1px solid var(--line2); overflow: hidden; box-shadow: 0 40px 120px -30px rgb(240 165 60 / .25), 0 30px 80px -20px rgb(0 0 0 / .8) }
 
-  .games { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 40px }
-  .chip { padding: 8px 14px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); font-size: 14px; font-weight: 600; color: var(--muted) }
+  /* ---------- app window (demo + tour) ---------- */
+  .window { border-radius: 18px; border: 1px solid var(--line2); background: var(--bg2); overflow: hidden; box-shadow: 0 50px 140px -40px rgb(240 165 60 / .28), 0 40px 90px -30px rgb(0 0 0 / .9) }
+  .win-bar { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 16px; border-bottom: 1px solid var(--line); background: var(--panel) }
+  .win-bar .dots { display: flex; gap: 7px }
+  .win-bar .dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--panel4) }
+  .win-bar .title { display: flex; align-items: center; gap: 8px; margin: 0 auto; font-size: 13px; font-weight: 700; color: var(--muted) }
+  .win-bar .title img { width: 18px; height: 18px }
+  .win-bar .live { font-size: 11.5px; font-weight: 700; color: var(--ok); display: flex; align-items: center; gap: 6px }
+  .win-bar .live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: ping 2s infinite; box-shadow: 0 0 0 0 rgb(61 220 151 / .5) }
 
-  section { padding: 72px 0 }
-  h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; letter-spacing: -.015em; line-height: 1.15 }
-  .sub { color: var(--muted); margin-top: 10px; max-width: 640px }
+  .demo-wrap { margin: 48px auto 0; max-width: 1080px; text-align: left }
+  .win { display: grid; grid-template-columns: 60px minmax(0, 1fr) 340px; min-height: 470px }
+  .rail { display: flex; flex-direction: column; gap: 6px; padding: 12px 10px; border-right: 1px solid var(--line); background: var(--panel) }
+  .rail button { display: grid; place-items: center; height: 44px; border-radius: 11px; padding: 3px; border: 2px solid transparent; transition: border-color .2s, transform .2s, opacity .2s; opacity: .55 }
+  .rail button:hover { opacity: 1; transform: scale(1.05) }
+  .rail button.on { opacity: 1; border-color: var(--accent) }
+  .rail button img { width: 100%; height: 100%; border-radius: 8px; background: var(--panel3) }
+  .win-main { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0 }
+  .pick { text-align: left; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); transition: border-color .2s, transform .2s, box-shadow .2s }
+  .pick:hover { border-color: var(--line2); transform: translateY(-2px) }
+  .pick.on { border-color: rgb(240 165 60 / .7); box-shadow: 0 0 0 1px rgb(240 165 60 / .4), 0 10px 30px -12px var(--glow) }
+  .game-head { display: flex; gap: 12px; align-items: center }
+  .game-head img { width: 92px; height: 43px; border-radius: 9px; object-fit: cover; background: var(--panel3); flex-shrink: 0 }
+  .game-head b { display: block; font-size: 17px; font-weight: 800 }
+  .game-head small { color: var(--faint); font-size: 12px }
+  .presets { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 8px }
+  .presets .pick { padding: 10px 12px }
+  .presets .pick b { display: block; font-size: 13.5px }
+  .presets .pick small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: var(--muted); font-size: 11.5px; margin-top: 2px }
+  .rows { border-radius: 14px; border: 1px solid var(--line); background: var(--panel); padding: 4px 14px }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; min-height: 38px; font-size: 13px; border-bottom: 1px solid var(--line) }
+  .row:last-child { border-bottom: 0 }
+  .row > span { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .row .was { color: var(--faint); font-size: 12px }
+  .row b { font-size: 13px; font-weight: 700; transition: color .3s }
+  .row.dirty b { color: var(--accent) }
+  .row.dirty > span::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: 6px; vertical-align: middle }
+  .fit-hint { display: flex; gap: 10px; align-items: flex-start; color: var(--faint); font-size: 12px }
+  .fit-hint .i { width: 16px; height: 16px; color: var(--accent); margin-top: 1px }
+  .cover-view img { width: 100%; aspect-ratio: 460 / 215; border-radius: 12px; background: var(--panel3) }
+  [hidden] { display: none !important }
+  .win-side { position: relative; border-left: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--panel) }
+  .side-title { font-weight: 800; font-size: 16px }
+  .side-note { color: var(--muted); font-size: 12.5px }
+  .changes { list-style: none; display: grid; gap: 6px; font-size: 12.5px }
+  .changes li { display: flex; gap: 8px; align-items: flex-start; color: #d6d8de; animation: pop .35s cubic-bezier(.2, .8, .2, 1) both }
+  .changes li::before { content: ""; flex-shrink: 0; width: 6px; height: 6px; margin-top: 6px; border-radius: 2px; background: var(--accent) }
+  .changes li.ws { color: var(--muted) } .changes li.ws::before { background: var(--ok) }
+  .side-actions { display: flex; gap: 8px; margin-top: auto }
+  .side-actions .undo { width: 46px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--panel3); color: var(--muted); transition: color .2s, background .2s }
+  .side-actions .undo:hover:not(:disabled) { color: var(--text); background: var(--panel4) }
+  .side-actions .apply { flex: 1; height: 44px; border-radius: 12px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--ink); transition: filter .2s, opacity .2s }
+  .side-actions button:disabled { opacity: .45; cursor: default }
+  .apply.busy { color: transparent; background: var(--panel4); position: relative }
+  .apply.busy::after { content: ""; position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; animation: spin .7s linear infinite }
+  @keyframes spin { to { transform: rotate(360deg) } }
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 72px; padding: 10px 12px; border-radius: 12px; background: #13241c; border: 1px solid rgb(61 220 151 / .35); color: #bff3da; font-size: 12.5px; font-weight: 600; display: flex; gap: 8px; align-items: flex-start; opacity: 0; transform: translateY(8px); transition: opacity .3s, transform .3s; pointer-events: none }
+  .toast.show { opacity: 1; transform: none }
+  .toast .i { color: var(--ok); width: 16px; height: 16px; margin-top: 1px }
+  .demo-hint { margin-top: 16px; text-align: center; color: var(--faint); font-size: 13px }
+  .demo-hint b { color: var(--muted) }
 
-  .feature { display: grid; grid-template-columns: 1fr 1.35fr; gap: 48px; align-items: center; margin-top: 56px }
-  .feature.flip { grid-template-columns: 1.35fr 1fr }
-  .feature.flip .text { order: 2 }
-  .feature h3 { font-size: 24px; font-weight: 800; letter-spacing: -.01em }
-  .feature p { color: var(--muted); margin-top: 10px }
-  .feature ul { list-style: none; margin-top: 16px; display: grid; gap: 8px; color: var(--muted); font-size: 15px }
-  .feature li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); margin: 0 10px 2px 0 }
-  .feature img { border-radius: 14px; border: 1px solid var(--line2) }
+  /* ---------- before / after ---------- */
+  .compare { --x: 50%; position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--panel3); cursor: ew-resize; user-select: none; touch-action: pan-y }
+  .compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; transition: opacity .35s }
+  .compare .before { clip-path: inset(0 calc(100% - var(--x)) 0 0) }
+  .compare .handle { position: absolute; top: 0; bottom: 0; left: var(--x); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 12px rgb(0 0 0 / .5) }
+  .compare .handle::after { content: "‹ ›"; position: absolute; top: 50%; left: 50%; width: 34px; height: 34px; margin: -17px; border-radius: 50%; background: #fff; color: #111; font-weight: 800; font-size: 13px; display: grid; place-items: center; letter-spacing: 2px }
+  .compare .lbl { position: absolute; bottom: 8px; padding: 3px 8px; border-radius: 6px; background: rgb(0 0 0 / .6); font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase }
+  .compare .lbl.l { left: 8px } .compare .lbl.r { right: 8px }
 
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 36px }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px }
-  .card h4 { font-size: 16px; font-weight: 700 }
-  .card p { color: var(--muted); font-size: 14.5px; margin-top: 6px }
-  .card .tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em }
+  /* ---------- sections ---------- */
+  section { padding: 88px 0; position: relative }
+  .kicker { color: var(--accent); font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase }
+  h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; letter-spacing: -.02em; line-height: 1.12; margin-top: 10px }
+  .sub { color: var(--muted); margin-top: 12px; max-width: 640px; font-size: 17px }
+  .center { text-align: center } .center .sub { margin-left: auto; margin-right: auto }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1) }
+  .reveal.in { opacity: 1; transform: none }
+  .reveal.d1 { transition-delay: .08s } .reveal.d2 { transition-delay: .16s } .reveal.d3 { transition-delay: .24s }
 
-  .honest { background: linear-gradient(180deg, var(--bg2), var(--bg)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line) }
+  /* games */
+  .games { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 40px }
+  .game { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line2); background: var(--panel); transform-style: preserve-3d; transition: transform .2s, box-shadow .3s, border-color .3s }
+  .game .art { position: relative; display: block; aspect-ratio: 460 / 215; overflow: hidden; background: linear-gradient(140deg, var(--c1), var(--c2)) }
+  .game img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s cubic-bezier(.2, .8, .2, 1) }
+  .game:hover img { transform: scale(1.07) }
+  .game .art::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / .2), transparent 55%); opacity: 0; transition: opacity .3s }
+  .game:hover { box-shadow: 0 20px 50px -20px var(--c1); border-color: color-mix(in srgb, var(--c1) 60%, transparent) } .game:hover .art::after { opacity: 1 }
+  .game .gt { display: block; padding: 10px 12px 11px; font-weight: 800; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .game .gs { display: block; font-size: 11.5px; font-weight: 600; color: var(--faint) }
+  .game .gd { position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 460 / 215; display: flex; align-items: flex-end; padding: 10px 12px; font-size: 12.5px; font-weight: 700; color: #fff; background: linear-gradient(180deg, transparent 20%, rgb(0 0 0 / .85)); opacity: 0; transition: opacity .3s }
+  .game:hover .gd, .game:focus-within .gd { opacity: 1 }
+  .game.soon { filter: grayscale(.9); opacity: .55 }
+  .game.soon .gd { opacity: 1 }
+  /* numbers */
+  .nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 56px }
+  .num { padding: 22px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line) }
+  .num b { display: block; font-size: 38px; font-weight: 800; letter-spacing: -.02em; background: linear-gradient(120deg, #fff, #c9cbd2); -webkit-background-clip: text; background-clip: text; color: transparent }
+  .num span { color: var(--muted); font-size: 14px }
 
-  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; max-width: 860px }
-  .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px }
-  .plan.pro { border-color: rgb(240 165 60 / .45); background: linear-gradient(160deg, rgb(240 165 60 / .09), var(--panel) 55%) }
-  .plan .name { font-weight: 800; font-size: 20px }
-  .plan .price { margin-top: 8px; font-size: 15px; color: var(--muted) }
-  .plan .price b { color: var(--text); font-size: 28px; font-weight: 800 }
-  .plan ul { list-style: none; margin-top: 18px; display: grid; gap: 9px; font-size: 15px }
-  .plan li { padding-left: 24px; position: relative; color: var(--muted) }
-  .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--ok); font-weight: 800 }
-  .plan .note { margin-top: 18px; font-size: 13px; color: var(--faint) }
+  /* tour */
+  .tour { margin-top: 44px }
+  .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px }
+  .tab { position: relative; overflow: hidden; display: flex; gap: 14px; text-align: left; padding: 16px; border-radius: 14px; border: 1px solid var(--line); background: rgb(255 255 255 / .015); transition: background .25s, border-color .25s }
+  .tab:hover { background: var(--panel) }
+  .tab.on { background: var(--panel); border-color: var(--line2) }
+  .tab .ic { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; background: var(--panel3); color: var(--muted); transition: .25s; flex-shrink: 0 }
+  .tab.on .ic { background: rgb(240 165 60 / .15); color: var(--accent) }
+  .tab b { display: block; font-size: 15.5px }
+  .tab em { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: normal; color: var(--muted); font-size: 12.5px; margin-top: 2px }
+  .tab .bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--accent) }
+  .tab.on .bar { animation: fill 7s linear forwards }
+  .tour.paused .tab.on .bar { animation-play-state: paused }
+  @keyframes fill { to { width: 100% } }
 
-  details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; margin-top: 10px }
-  details summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 16px }
-  details summary::after { content: "+"; color: var(--faint); font-weight: 600 }
-  details[open] summary::after { content: "–" }
-  details p { color: var(--muted); margin-top: 10px; font-size: 15px }
-  .faq details { max-width: 860px }
+  /* slider showcase */
+  .look { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: center; margin-top: 44px }
+  .look .compare { border-radius: 18px; border: 1px solid var(--line2); box-shadow: 0 40px 100px -40px rgb(0 0 0 / .9) }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px }
+  .chip { padding: 9px 15px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line2); font-weight: 700; font-size: 14px; color: var(--muted); transition: .2s }
+  .chip:hover { color: var(--text); border-color: var(--faint) }
+  .chip.on { color: var(--ink); background: var(--accent); border-color: var(--accent) }
+  .look p.note { color: var(--faint); font-size: 13px; margin-top: 18px }
 
-  .final { text-align: center }
-  .final .sub { margin: 10px auto 0 }
-  .final .cta { margin-top: 28px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap }
-  .req { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; margin-top: 22px; color: var(--faint); font-size: 13px }
+  /* safety */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 40px }
+  .card { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px; overflow: hidden; transition: transform .3s, border-color .3s }
+  .card::before { content: ""; position: absolute; inset: -1px; background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 0%), rgb(240 165 60 / .14), transparent 45%); opacity: 0; transition: opacity .3s }
+  .card:hover { transform: translateY(-4px); border-color: var(--line2) } .card:hover::before { opacity: 1 }
+  .card .ic { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; background: rgb(240 165 60 / .12); color: var(--accent); margin-bottom: 16px }
+  .card h4 { font-size: 17px; font-weight: 800 }
+  .card p { color: var(--muted); font-size: 14.5px; margin-top: 8px; position: relative }
 
+  /* plans */
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 44px auto 0; max-width: 900px; text-align: left }
+  .plan { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 30px }
+  .plan.pro { background: linear-gradient(160deg, rgb(240 165 60 / .1), var(--panel) 55%); border-color: transparent }
+  .plan.pro::before { content: ""; position: absolute; inset: 0; border-radius: 20px; padding: 1px; background: conic-gradient(from var(--a, 0deg), var(--accent), transparent 30%, transparent 70%, var(--accent2)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: rot 6s linear infinite }
+  @property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg }
+  @keyframes rot { to { --a: 360deg } }
+  .plan .name { font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 10px }
+  .plan .badge { font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: var(--accent); color: var(--ink) }
+  .plan .price { margin-top: 10px; font-size: 15px; color: var(--muted) }
+  .plan .price b { color: var(--text); font-size: 34px; font-weight: 800 }
+  .plan ul { list-style: none; margin-top: 20px; display: grid; gap: 10px; font-size: 15px }
+  .plan li { display: flex; gap: 10px; color: var(--muted) }
+  .plan li .i { color: var(--ok); width: 18px; height: 18px; margin-top: 2px }
+  .plan .note { margin-top: 20px; font-size: 13px; color: var(--faint) }
+
+  /* ask (questions as a chat) */
+  .ask { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 24px; margin-top: 44px; align-items: start }
+  .qs { display: flex; flex-direction: column; gap: 8px }
+  .q { text-align: left; padding: 14px 16px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); font-weight: 700; font-size: 14.5px; display: flex; gap: 10px; align-items: center; transition: .2s }
+  .q .i { color: var(--faint); width: 18px; height: 18px; transition: .2s }
+  .q:hover { border-color: var(--line2); transform: translateX(4px) }
+  .q:hover .i { color: var(--accent) }
+  .q.done { color: var(--muted) } .q.done .i { color: var(--ok) }
+  .chat { height: 440px; display: flex; flex-direction: column }
+  .chat .log { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth }
+  .msg { max-width: 82%; padding: 12px 15px; border-radius: 16px; font-size: 14.5px; line-height: 1.5; animation: pop .35s cubic-bezier(.2, .8, .2, 1) }
+  .msg.bot { background: var(--panel3); border-bottom-left-radius: 6px; color: #d9dbe0 }
+  .msg.me { align-self: flex-end; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--ink); font-weight: 700; border-bottom-right-radius: 6px }
+  .typing { display: inline-flex; gap: 4px; padding: 14px 16px }
+  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); animation: blink 1.2s infinite }
+  .typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s }
+  @keyframes blink { 0%, 60%, 100% { opacity: .3; transform: none } 30% { opacity: 1; transform: translateY(-3px) } }
+  @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98) } }
+  .chat .foot { padding: 12px 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12.5px; display: flex; gap: 8px; align-items: center }
+  .chat .foot a { color: var(--accent); font-weight: 700 }
+
+  /* get */
+  .get { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 32px; align-items: center; margin-top: 44px }
+  .steps { display: grid; gap: 14px; counter-reset: s }
+  .step { display: flex; gap: 16px; align-items: flex-start; padding: 18px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line) }
+  .step .n { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; background: var(--panel3); color: var(--accent); flex-shrink: 0 }
+  .step b { display: block; font-size: 16px }
+  .step span { color: var(--muted); font-size: 14px }
+  .dl { position: relative; padding: 32px; border-radius: 22px; background: radial-gradient(120% 120% at 100% 0%, rgb(240 165 60 / .2), transparent 50%), var(--panel); border: 1px solid rgb(240 165 60 / .35); text-align: center; overflow: hidden }
+  .dl .win-logo { width: 64px; height: 64px; margin: 0 auto; color: var(--accent); filter: drop-shadow(0 8px 24px var(--glow)) }
+  .dl h3 { font-size: 24px; font-weight: 800; margin-top: 16px }
+  .dl .btn { width: 100%; margin-top: 20px; height: 58px; font-size: 17px }
+  .dl .js-version { display: block; color: var(--muted); font-size: 13px; margin-top: 12px }
+  .dl .more { display: flex; gap: 8px; margin-top: 18px }
+  .dl .more a { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border-radius: 12px; background: var(--panel3); border: 1px solid var(--line2); font-weight: 700; font-size: 14px; color: var(--text); transition: .2s }
+  .dl .more a:hover { background: var(--panel4); transform: translateY(-2px) }
+  .dl .more .i { width: 17px; height: 17px; color: var(--accent) }
+
+  /* ---------- feature panels (live, like the app) ---------- */
+  .panels { position: relative; min-height: 470px }
+  .panel { position: absolute; inset: 0; padding: 18px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .45s, transform .45s, visibility .45s }
+  .panel.on { position: relative; opacity: 1; visibility: visible; transform: none }
+  .pnote { color: var(--faint); font-size: 12px; margin-top: 12px }
+  .sw { position: relative; width: 38px; height: 22px; border-radius: 999px; background: var(--panel4); flex-shrink: 0; transition: background .25s }
+  .sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #cfd1d8; transition: transform .25s cubic-bezier(.3, 1.4, .5, 1), background .25s }
+  .on > .sw, .sw.on { background: var(--accent) } .on > .sw::after, .sw.on::after { transform: translateX(16px); background: #fff }
+  .mini-apply { height: 38px; padding: 0 16px; border-radius: 11px; font-weight: 800; font-size: 13.5px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--ink); position: relative }
+  .mini-apply:disabled { opacity: .45; cursor: default }
+  .mini-apply.busy { color: transparent; background: var(--panel4) }
+  .mini-apply.busy::after { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; animation: spin .7s linear infinite }
+  .ghost-sm { height: 34px; padding: 0 12px; border-radius: 10px; font-weight: 700; font-size: 12.5px; background: var(--panel3); border: 1px solid var(--line2); color: var(--text); transition: .2s; white-space: nowrap }
+  .ghost-sm:hover { background: var(--panel4) }
+
+  /* tweaks */
+  .tw { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px }
+  .tw-list { display: grid; gap: 6px; align-content: start; min-width: 0 }
+  .tw-row { min-width: 0; width: 100%; display: flex; gap: 12px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); transition: border-color .2s, background .2s }
+  .tw-row:hover, .tw-row.focus { border-color: var(--line2); background: var(--panel2) }
+  .tw-row > span:first-child { flex: 1; min-width: 0 }
+  .tw-row b { display: block; font-size: 13.5px }
+  .tw-row small { display: block; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .tw-side { display: flex; flex-direction: column; gap: 10px }
+  .tw-side .t { font-weight: 800; font-size: 15px }
+  .tw-side p { font-size: 12.5px; color: var(--muted) } .tw-side p b { color: var(--faint); font-weight: 700 }
+  .tw-foot { margin-top: auto; display: flex; align-items: center; gap: 10px; justify-content: space-between; font-size: 12.5px; color: var(--muted) }
+
+  /* computer */
+  .hw-cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px }
+  .hw-card { padding: 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); min-width: 0; transition: border-color .4s }
+  .hw-card small { display: block; color: var(--faint); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em }
+  .hw-card b { display: block; font-size: 13px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+  .hw-card span { display: block; font-size: 11.5px; color: var(--muted); margin-top: 2px; transition: color .4s }
+  .hw-card.warn { border-color: rgb(240 165 60 / .45) } .hw-card.warn span { color: var(--accent) }
+  .hw-card.fixed { border-color: rgb(61 220 151 / .45) } .hw-card.fixed span { color: var(--ok) }
+  .advs { display: grid; gap: 8px; margin-top: 14px }
+  .adv { border-radius: 12px; background: var(--panel); border: 1px solid var(--line); padding: 12px 14px }
+  .adv-h { display: flex; gap: 10px; align-items: center }
+  .adv-h .d { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 0 4px rgb(240 165 60 / .15) }
+  .adv.ok .adv-h .d { background: var(--ok); box-shadow: 0 0 0 4px rgb(61 220 151 / .15) }
+  .adv-h b { flex: 1; font-size: 13.5px }
+  .adv p { color: var(--muted); font-size: 12.5px; margin: 6px 0 0 19px }
+  .adv ol { margin: 0 0 0 19px; padding-left: 18px; color: #d6d8de; font-size: 12.5px; display: grid; gap: 3px; max-height: 0; overflow: hidden; transition: max-height .4s, margin .4s }
+  .adv.open ol { max-height: 120px; margin-top: 8px }
+
+  /* network */
+  .net-speed { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: 8px; align-items: stretch }
+  .ns { padding: 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line) }
+  .ns small { display: block; color: var(--faint); font-size: 11.5px; font-weight: 700 }
+  .ns b { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em }
+  .ns em { font-style: normal; color: var(--muted); font-size: 12px; margin-left: 4px }
+  .net-speed .mini-apply { align-self: center; height: 44px }
+  .regions { margin-top: 14px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); padding: 12px 14px }
+  .regions .h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 13.5px; font-weight: 800 }
+  .rg { display: grid; grid-template-columns: 210px minmax(0, 1fr) 64px; gap: 12px; align-items: center; height: 32px; font-size: 13px }
+  .rg .bar { height: 6px; border-radius: 6px; background: var(--panel4); overflow: hidden }
+  .rg .bar i { display: block; height: 100%; width: 0; border-radius: 6px; background: var(--ok); transition: width .9s cubic-bezier(.2, .8, .2, 1) }
+  .rg.mid .bar i { background: var(--accent) } .rg.far .bar i { background: #e0524b }
+  .rg > span:first-child { white-space: nowrap }
+  .rg b { text-align: right; font-variant-numeric: tabular-nums } .rg .best { font-style: normal; color: var(--ok); font-size: 11px; font-weight: 800; margin-left: 8px; padding: 2px 6px; border-radius: 6px; background: rgb(61 220 151 / .12) }
+
+  /* raid calculator */
+  .raid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px }
+  .raid-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-weight: 800; font-size: 15px }
+  .raid-h small { color: var(--faint); font-weight: 600; font-size: 12px }
+  .targets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px }
+  .targets button { padding: 7px 11px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line2); font-size: 12.5px; font-weight: 700; color: var(--muted); transition: .2s }
+  .targets button:hover { color: var(--text) } .targets button.on { background: var(--accent); border-color: var(--accent); color: var(--ink) }
+  .qty { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px; color: var(--muted) }
+  .qty button { width: 32px; height: 32px; border-radius: 9px; background: var(--panel3); border: 1px solid var(--line2); font-weight: 800; font-size: 16px }
+  .qty b { min-width: 28px; text-align: center; color: var(--text); font-size: 16px; font-variant-numeric: tabular-nums }
+  .exps { display: grid; gap: 6px; align-content: start }
+  .exp { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); transition: border-color .3s }
+  .exp b { font-size: 13.5px } .exp .n { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; text-align: right; grid-row: span 2; align-self: center }
+  .exp small { color: var(--muted); font-size: 11.5px }
+  .exp.best { border-color: rgb(61 220 151 / .5) } .exp.best small { color: var(--ok) }
+  .also { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; align-items: center; font-size: 12.5px; color: var(--faint) }
+  .also em { font-style: normal; margin-right: 2px }
+  .also span { padding: 5px 10px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--muted); font-weight: 600 }
+  .tw-icon { width: 54px; height: 54px; border-radius: 15px; display: grid; place-items: center; background: rgb(240 165 60 / .12); color: var(--accent) }
+  .tw-icon .i { width: 26px; height: 26px }
+  .tgames { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin }
+  .tgames button { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line2); font-weight: 700; font-size: 13px; color: var(--muted); transition: .2s }
+  .tgames button img { width: 46px; height: 26px; border-radius: 8px; object-fit: cover; background: var(--panel3) }
+  .tgames button:hover { color: var(--text) }
+  .tgames button.on { border-color: var(--accent); color: var(--text); background: rgb(240 165 60 / .08) }
+  .tools-body { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; margin-top: 12px }
+  .tlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
+  .tcard { padding: 12px 14px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); animation: pop .35s cubic-bezier(.2, .8, .2, 1) both }
+  .tcard b { display: block; font-size: 13.5px }
+  .tcard span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px }
+  .try { border-radius: 14px; background: var(--panel); border: 1px solid var(--line); padding: 14px; align-self: start }
+  .try > div { display: grid; gap: 10px }
+  .sel { width: 100%; height: 38px; padding: 0 10px; border-radius: 10px; background: var(--panel3); border: 1px solid var(--line2); color: var(--text); font: inherit; font-size: 13.5px; font-weight: 600 }
+  .xh-view { position: relative; height: 150px; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #5d6b78, #3b4652 55%, #6b5b45 56%, #4a3f30) }
+  .xh-view i, .xh-view b { position: absolute; display: block; box-shadow: 0 0 0 1px rgb(0 0 0 / .55) }
+  .xh-row { display: grid; grid-template-columns: 80px 1fr; gap: 10px; align-items: center; font-size: 13px; color: var(--muted) }
+  .xh-row input[type=range] { accent-color: var(--accent) }
+  .xh-dot { grid-template-columns: auto 1fr; cursor: pointer } .xh-dot input { accent-color: var(--accent) }
+  .xh-colors { display: flex; gap: 8px }
+  .xh-colors button { width: 26px; height: 26px; border-radius: 50%; background: var(--c); border: 2px solid transparent; box-shadow: 0 0 0 1px var(--line2) }
+  .xh-colors button.on { border-color: #fff }
   footer { border-top: 1px solid var(--line); padding: 32px 0 44px; color: var(--faint); font-size: 13px }
   footer .wrap { display: flex; gap: 18px 28px; flex-wrap: wrap; align-items: center }
   footer .links { display: flex; gap: 18px; flex-wrap: wrap; margin-left: auto }
   footer a:hover { color: var(--text) }
 
-  @media (max-width: 860px) {
-    nav { display: none }
-    .feature, .feature.flip { grid-template-columns: 1fr; gap: 22px }
-    .feature.flip .text { order: 0 }
-    .cards { grid-template-columns: 1fr }
-    .plans { grid-template-columns: 1fr }
-    section { padding: 52px 0 }
-    .hero { padding-top: 48px }
-    footer .links { margin-left: 0 }
+  @media (max-width: 980px) {
+    .win { grid-template-columns: 52px minmax(0, 1fr) }
+    .win-side { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line) }
+    .tour, .look, .ask, .get { grid-template-columns: 1fr }
+    .nums { grid-template-columns: repeat(2, 1fr) }
+    .games { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+    .tw, .raid, .tools-body { grid-template-columns: 1fr }
+    .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .hw-cards { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+    .net-speed { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .net-speed .mini-apply { grid-column: 1 / -1 }
+  }
+  @media (max-width: 720px) {
+    nav.top { display: none }
     .lang { margin-left: auto }
+    section { padding: 64px 0 }
+    .hero { padding-top: 48px }
+    .win { grid-template-columns: 1fr }
+    .win-bar .live { display: none }
+    .win-bar .title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0 }
+    .rail { flex-direction: row; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto }
+    .rail button { width: 48px; flex-shrink: 0 }
+    .presets { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px }
+    .row .was { display: none }
+    .cards, .plans { grid-template-columns: 1fr }
+    .games { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .chat { height: 400px }
+    .hw-cards { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .tlist { grid-template-columns: 1fr }
+    .tab { padding: 12px; gap: 10px; align-items: center } .tab > span:nth-child(2) { min-width: 0 }
+    .tab .ic { width: 32px; height: 32px; border-radius: 9px } .tab .ic .i { width: 17px; height: 17px }
+    .tab b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis } .tab em { display: none }
+    .rg { grid-template-columns: 150px minmax(0, 1fr) 52px; gap: 8px; font-size: 12px }
+    .rg .best { margin-left: 4px; padding: 1px 4px; font-size: 10px }
+    .panel { padding: 12px }
+    footer .links { margin-left: 0 }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important }
+    .reveal { opacity: 1; transform: none }
   }
 </style>
 </head>
@@ -122,138 +418,336 @@
 <header>
   <div class="wrap">
     <a class="brand" href="#"><img src="../assets/logo.png" alt="">Forge</a>
-    <nav>
+    <nav class="top">
       <a href="#features">Features</a>
+      <a href="#games">Games</a>
       <a href="#pro">Forge Pro</a>
-      <a href="#faq">FAQ</a>
-      <a href="https://t.me/ForgeOptimizer" target="_blank" rel="noopener">Telegram</a>
+      <a href="#ask">FAQ</a>
     </nav>
     <a class="lang" href="../" hreflang="ru">RU</a>
-    <a class="btn btn-primary btn-sm js-download" href="https://t.me/ForgeOptimizer">Download</a>
+    <a class="btn btn-primary btn-sm js-download" href="https://t.me/ForgeOptimizer">
+      <svg class="i f" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm8.5-1.2L21 3v8.5h-9.5V4.3ZM3 12.5h7.5v7.1L3 18.5v-6Zm8.5 0H21V21l-9.5-1.3v-7.2Z"/></svg>Download
+    </a>
   </div>
 </header>
 
 <main>
-  <div class="hero wrap">
-    <h1>Games and Windows, <span>tuned for your PC</span></h1>
-    <p class="lead">Forge picks graphics settings for your graphics card and processor, trims what Windows doesn't need and shows exactly what it changes. A backup comes before every change.</p>
-    <div class="cta">
-      <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm8.5-1.2L21 3v8.5h-9.5V4.3ZM3 12.5h7.5v7.1L3 18.5v-6Zm8.5 0H21V21l-9.5-1.3v-7.2Z"/></svg>
-        Download for Windows
-      </a>
-      <a class="btn btn-ghost" href="#features">What it does</a>
-    </div>
-    <div class="meta js-meta">Windows 10 and 11 · free</div>
-    <div class="gift js-gift" hidden></div>
-    <img class="shot-main" src="../assets/shots/en/settings.png" alt="Rust graphics settings in Forge: picked for this PC, with before and after previews" width="2560" height="1600">
-    <div class="games">
-      <span class="chip">Rust</span><span class="chip">Counter-Strike 2</span><span class="chip">PUBG</span><span class="chip">Valorant</span>
-      <span class="chip">Dota 2</span><span class="chip">Deadlock</span><span class="chip">Fortnite</span><span class="chip">GTA V</span><span class="chip">ROB RUN</span>
+  <div class="hero">
+    <div class="hero-bg"><i class="blob a"></i><i class="blob b"></i><i class="blob c"></i></div>
+    <div class="wrap">
+      <span class="eyebrow reveal"><i class="dot"></i>Beta · looking and learning are free</span>
+      <h1 class="reveal d1">Games and Windows, <span>tuned for your PC</span></h1>
+      <p class="lead reveal d2">Forge picks graphics settings for your graphics card and processor, trims what Windows doesn't need and shows exactly what it changes. A backup comes before every change.</p>
+      <div class="cta reveal d3">
+        <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer">
+          <svg class="i f" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm8.5-1.2L21 3v8.5h-9.5V4.3ZM3 12.5h7.5v7.1L3 18.5v-6Zm8.5 0H21V21l-9.5-1.3v-7.2Z"/></svg>
+          Download for Windows
+        </a>
+        <a class="btn btn-ghost" href="#demo"><svg class="i" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>Try it here</a>
+      </div>
+      <div class="meta js-meta">Windows 10 and 11 · free</div>
+      <div class="gift js-gift" hidden></div>
+
+      <div class="demo-wrap" id="demo">
+        <div class="window demo reveal">
+          <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title"><img src="../assets/logo.png" alt=""><span class="js-wtitle">Forge · Game settings</span></span><span class="live">Clickable</span></div>
+          <div class="win">
+            <nav class="rail js-games" aria-label="Games"></nav>
+            <div class="win-main">
+              <div class="game-head"><img class="js-gcover" alt=""><div><b class="js-gname"></b><small>Ready-made sets and settings of this game, straight from the app</small></div></div>
+              <div class="presets js-presets"></div>
+              <div class="rows js-rows"></div>
+              <div class="fit-hint"><svg class="i" viewBox="0 0 24 24"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg>The app also has a “For this PC” set: Forge builds it from your graphics card, processor and memory.</div>
+            </div>
+            <aside class="win-side">
+              <div class="compare js-compare js-demoview">
+                <img class="after" alt="" src="../assets/scenes/preset-quality.svg">
+                <img class="before" alt="" src="../assets/scenes/preset-quality.svg">
+                <span class="handle"></span><span class="lbl l">Now</span><span class="lbl r">After</span>
+              </div>
+              <div class="cover-view js-coverview"><img alt=""></div>
+              <div class="side-title js-title">Pick a set</div>
+              <div class="side-note js-note">On the left what is set now, on the right what it becomes. Nothing is written until “Apply”.</div>
+              <ul class="changes js-changes"></ul>
+              <div class="side-actions">
+                <button class="undo js-undo" title="Undo" disabled><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+                <button class="apply js-apply" disabled>Apply</button>
+              </div>
+              <div class="toast js-toast" role="status"><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span></span></div>
+            </aside>
+          </div>
+        </div>
+        <p class="demo-hint">This is a mock-up of the Forge settings screen. <b>Pick a game and a set, press “Apply”</b> — the app works the same way.</p>
+        <script type="application/json" id="demo-data">{"games":[{"id":"rust","name":"Rust","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg"},{"id":"cs2","name":"Counter-Strike 2","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg"},{"id":"robrun","name":"ROB RUN","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4262460/db8e0cf43c9475b96fb9446b4908de79fcb9f619/header.jpg"},{"id":"dota2","name":"Dota 2","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg"},{"id":"valorant","name":"Valorant","cover":"../assets/covers/valorant.webp","coverFit":"contain","coverFilter":"invert(1) hue-rotate(180deg)"},{"id":"apex","name":"Apex Legends","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/dc5c390e9a273a7248f75c1b2d59987f6179323c/header_alt_assets_7.jpg"},{"id":"fortnite","name":"Fortnite","cover":"../assets/covers/fortnite.webp","coverFit":"cover","coverFilter":null,"coverPos":"50% 10%"},{"id":"pubg","name":"PUBG: Battlegrounds","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/578080/841ea38bc58cabb70aef65365cf50bc2d79329d9/header.jpg"},{"id":"deadlock","name":"Deadlock","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg"},{"id":"gta5","name":"GTA V","cover":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg"}],"demo":{"cs2":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything at minimum, no anti-aliasing"},{"id":"comp","title":"Competitive","text":"Low, but with player shadows and 4x anti-aliasing"},{"id":"quality","title":"Quality","text":"A good-looking picture for a powerful PC"}],"rows":[{"label":"Shader quality","values":{"fps":"Low","comp":"Low","quality":"High"}},{"label":"Texture filtering","values":{"fps":"Trilinear","comp":"Anisotropic 4x","quality":"Anisotropic 16x"}},{"label":"Anti-aliasing","values":{"fps":"Off","comp":"4x MSAA","quality":"8x MSAA"}},{"label":"Shadow quality","values":{"fps":"Low","comp":"High","quality":"Very high"}},{"label":"Dynamic shadows","values":{"fps":"Sun only","comp":"All","quality":"All"}}]},"pubg":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything on very low"},{"id":"comp","title":"Competitive","text":"Low, but higher anti-aliasing, textures and view distance"},{"id":"quality","title":"Quality","text":"Everything on ultra"}],"rows":[{"label":"Anti-aliasing","values":{"fps":"Very low","comp":"High","quality":"Ultra"}},{"label":"Post-processing","values":{"fps":"Very low","comp":"Very low","quality":"Ultra"}},{"label":"Shadows","values":{"fps":"Very low","comp":"Very low","quality":"Ultra"}},{"label":"Textures","values":{"fps":"Very low","comp":"Medium","quality":"Ultra"}},{"label":"Effects","values":{"fps":"Very low","comp":"Very low","quality":"Ultra"}}]},"valorant":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything heavy at minimum, textures by video memory"},{"id":"comp","title":"Competitive","text":"Minimum, but keeping what helps you see enemies"},{"id":"balance","title":"Balanced","text":"Lowers what costs the most"},{"id":"quality","title":"Quality","text":"Everything at maximum, sync off"}],"rows":[{"label":"Draw distance","values":{"fps":"Low","comp":"High","balance":"Medium","quality":"Epic"}},{"label":"Anti-aliasing","values":{"fps":"High","comp":"Epic","balance":"High","quality":"Epic"}},{"label":"Shadows","values":{"fps":"Low","comp":"Low","balance":"Medium","quality":"Epic"}},{"label":"Global illumination","values":{"fps":"Low","comp":"Low","balance":"Medium","quality":"Epic"}},{"label":"Reflections","values":{"fps":"Low","comp":"Low","balance":"Medium","quality":"Epic"}}]},"fortnite":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything heavy at minimum, textures by video memory"},{"id":"comp","title":"Competitive","text":"Minimum, but keeping what helps you see enemies"},{"id":"balance","title":"Balanced","text":"Lowers what costs the most"},{"id":"quality","title":"Quality","text":"Everything at maximum, sync off"}],"rows":[{"label":"Draw distance","values":{"fps":"Low","comp":"High","balance":"Medium","quality":"Epic"}},{"label":"Anti-aliasing","values":{"fps":"Low","comp":"Medium","balance":"High","quality":"Epic"}},{"label":"Shadows","values":{"fps":"Low","comp":"Low","balance":"Medium","quality":"Epic"}},{"label":"Global illumination","values":{"fps":"Low","comp":"Low","balance":"Medium","quality":"Epic"}},{"label":"Reflections","values":{"fps":"Low","comp":"Low","balance":"Medium","quality":"Epic"}}]},"apex":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything heavy at minimum, textures by video memory"},{"id":"comp","title":"Competitive","text":"Minimum, but keeping what helps you see enemies"},{"id":"balance","title":"Balanced","text":"Lowers what costs the most"},{"id":"quality","title":"Quality","text":"Everything at maximum, sync off"}],"rows":[{"label":"Anti-aliasing","values":{"fps":"Off","comp":"TSAA","balance":"TSAA","quality":"TSAA"}},{"label":"Texture filtering","values":{"fps":"4x","comp":"16x","balance":"16x","quality":"16x"}},{"label":"Sun shadows","values":{"fps":"Off","comp":"Off","balance":"Off","quality":"On"}},{"label":"Shadows from lamps and lights","values":{"fps":"Off","comp":"Off","balance":"Off","quality":"On"}},{"label":"Ambient occlusion","values":{"fps":"Off","comp":"Off","balance":"On","quality":"On"}}]},"dota2":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything heavy at minimum, textures by video memory"},{"id":"comp","title":"Competitive","text":"Minimum, but keeping what helps you see enemies"},{"id":"balance","title":"Balanced","text":"Lowers what costs the most"},{"id":"quality","title":"Quality","text":"Everything at maximum, sync off"}],"rows":[{"label":"Shadows","values":{"fps":"Off","comp":"Off","balance":"Medium","quality":"High"}},{"label":"Ambient occlusion","values":{"fps":"Off","comp":"Off","balance":"On","quality":"On"}},{"label":"Fog","values":{"fps":"Off","comp":"Off","balance":"Off","quality":"On"}},{"label":"Surface specular","values":{"fps":"Off","comp":"Off","balance":"Off","quality":"On"}},{"label":"Specular glow","values":{"fps":"Off","comp":"Off","balance":"Off","quality":"On"}}]},"gta5":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything heavy at minimum, textures by video memory"},{"id":"balance","title":"Balanced","text":"Lowers what costs the most"},{"id":"quality","title":"Quality","text":"Everything at maximum, sync off"}],"rows":[{"label":"Shaders","values":{"fps":"Normal","balance":"High","quality":"Very high"}},{"label":"Shadows","values":{"fps":"Normal","balance":"High","quality":"Very high"}},{"label":"Reflections","values":{"fps":"Normal","balance":"High","quality":"Ultra"}},{"label":"Water","values":{"fps":"Normal","balance":"High","quality":"Very high"}},{"label":"Particles","values":{"fps":"Normal","balance":"Very high","quality":"Very high"}}]},"robrun":{"presets":[{"id":"fps","title":"Max FPS","text":"Everything heavy at minimum, textures by video memory"},{"id":"comp","title":"Competitive","text":"Minimum, but keeping what helps you see enemies"},{"id":"balance","title":"Balanced","text":"Lowers what costs the most"},{"id":"quality","title":"Quality","text":"Everything at maximum, sync off"}],"rows":[{"label":"Anti-aliasing","values":{"fps":"Off","comp":"SMAA","balance":"SMAA","quality":"SMAA ×4"}},{"label":"Anisotropic filtering","values":{"fps":"On","comp":"For all textures","balance":"For all textures","quality":"For all textures"}},{"label":"Shadows","values":{"fps":"Off","comp":"Off","balance":"Low","quality":"Maximum"}},{"label":"Shadows from lights and lamps","values":{"fps":"Off","comp":"Off","balance":"Off","quality":"On"}},{"label":"Additional lights","values":{"fps":"Off","comp":"Off","balance":"On","quality":"On"}}]},"rust":{"presets":[{"id":"fps","title":"Max FPS","text":"For weak PCs and PvP"},{"id":"balance","title":"Balanced","text":"Good FPS and a decent picture"},{"id":"quality","title":"Visuals","text":"For screenshots and powerful hardware"}],"rows":[{"label":"Draw distance","values":{"fps":"1000 m","balance":"1500 m","quality":"2500 m"}},{"label":"Distance detail (LOD)","values":{"fps":"0.5×","balance":"1×","quality":"2×"}},{"label":"Model quality","values":{"fps":"50","balance":"100","quality":"200"}},{"label":"Tree quality","values":{"fps":"100","balance":"250","quality":"500"}},{"label":"Tree count","values":{"fps":"20","balance":"50","quality":"100"}}]}}}</script>
+      </div>
     </div>
   </div>
 
   <section id="features">
     <div class="wrap">
-      <h2>What Forge does</h2>
-      <p class="sub">No magic “+100 FPS” buttons: Forge shows what it changes and why, and one button puts everything back.</p>
-
-      <div class="feature">
-        <div class="text">
-          <h3>Game settings for your hardware</h3>
-          <p>Every game setting on one page: “For this PC”, “Max FPS”, “Balanced” and “Visuals” sets, plus “Low latency” and “Competitive” for Rust. Each slider comes with a preview of how it changes the picture.</p>
-          <ul><li>Writes straight to the game's settings files</li><li>Explains why each value was chosen</li><li>Old settings come back with one button</li></ul>
-        </div>
-        <img src="../assets/shots/en/tweaks.png" alt="Rust tweaks in Forge" loading="lazy" width="2560" height="1600">
+      <div class="center reveal">
+        <div class="kicker">Features</div>
+        <h2>Everything for the game, in one app</h2>
+        <p class="sub">No magic “+100 FPS” buttons: Forge shows what it changes and why, and one button puts everything back.</p>
       </div>
-
-      <div class="feature flip">
-        <div class="text">
-          <h3>Your PC, no guesswork</h3>
-          <p>Where your PC stands among others, what limits FPS the most and what can be fixed: the XMP memory profile, monitor refresh rate, driver, overheating, the drive the game is on.</p>
-          <ul><li>Hardware advisor and diagnostics</li><li>Windows tweaks undone with the same switch</li><li>A restore point before changes</li></ul>
+      <div class="tour js-tour">
+        <div class="tabs reveal d1" role="tablist">
+          <button class="tab on" data-shot="tweaks" role="tab"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg></span><span><b>Windows for games</b><em>Tweaks for every game at once: what each gives, costs and how to undo</em></span><i class="bar"></i></button>
+          <button class="tab" data-shot="hardware" role="tab"><span class="ic"><svg class="i" viewBox="0 0 24 24"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/></svg></span><span><b>Computer</b><em>What slows the game and how to fix it: XMP, refresh rate, driver</em></span><i class="bar"></i></button>
+          <button class="tab" data-shot="network" role="tab"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 16.43a5 5 0 0 1 7 0"/></svg></span><span><b>Network</b><em>Speed, ping to game servers, packet loss and route</em></span><i class="bar"></i></button>
+          <button class="tab" data-shot="tools" role="tab"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span><b>Tools</b><em>Raids, monuments, your own server, CS2 crosshair and more</em></span><i class="bar"></i></button>
         </div>
-        <img src="../assets/shots/en/hardware.png" alt="PC analysis in Forge" loading="lazy" width="2560" height="1600">
-      </div>
+        <div class="window reveal d2">
+          <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title"><img src="../assets/logo.png" alt=""><span class="js-ptitle">Forge · Windows</span></span><span class="live">Clickable</span></div>
+          <div class="panels">
 
-      <div class="feature">
-        <div class="text">
-          <h3>Network, no myths</h3>
-          <p>Speed and ping under load, ping to the game's servers by region, packet loss and a trace to the server. A DNS comparison, with an honest note that it doesn't lower in-game ping.</p>
-          <ul><li>Speed test through Cloudflare</li><li>The nearest region and a check of your own server</li><li>Only tweaks that matter for games</li></ul>
-        </div>
-        <img src="../assets/shots/en/network.png" alt="Network check in Forge" loading="lazy" width="2560" height="1600">
-      </div>
+            <div class="panel on" data-shot="tweaks" data-title="Forge · Windows">
+              <div class="tw">
+                <div class="tw-list js-twlist">
+<!-- tweaks -->
+                  <button class="tw-row" data-tw="game-mode" data-cat="game" data-desc="Windows gives the game priority and doesn't start installing updates or background tasks while you play." data-cost="Windows background tasks may run later."><span><b>Windows Game Mode</b><small>Windows gives the game priority and doesn't start installing updates or background tasks while you play.</small></span><span class="sw"></span></button>
+                  <button class="tw-row" data-tw="game-dvr-off" data-cat="game" data-desc="Background gameplay recording (Game DVR) keeps a video buffer at all times and uses GPU resources." data-cost="Xbox Game Bar won't record the last minutes of play."><span><b>Turn off Xbox Game Bar background recording</b><small>Background gameplay recording (Game DVR) keeps a video buffer at all times and uses GPU resources.</small></span><span class="sw"></span></button>
+                  <button class="tw-row" data-tw="power-plan" data-cat="power" data-desc="The CPU drops clocks less often." data-cost="Higher power draw and heat; on a laptop the battery drains faster."><span><b>“High performance” power plan</b><small>The CPU drops clocks less often.</small></span><span class="sw"></span></button>
+                  <button class="tw-row" data-tw="mouse-accel-off" data-cat="input" data-desc="“Enhance pointer precision” is turned off: aim movement depends only on distance, not on how fast your hand moves." data-cost="The Windows cursor will move differently: takes getting used to."><span><b>Turn off mouse acceleration</b><small>“Enhance pointer precision” is turned off: aim movement depends only on distance, not on how fast your hand moves.</small></span><span class="sw"></span></button>
+                  <button class="tw-row" data-tw="background-apps-off" data-cat="windows" data-desc="Microsoft Store apps don't run in the background. Classic programs (Discord, Steam) aren't affected." data-cost="Store apps won't update or send notifications in the background."><span><b>Block background activity of Store apps</b><small>Microsoft Store apps don't run in the background. Classic programs (Discord, Steam) aren't affected.</small></span><span class="sw"></span></button>
+                  <button class="tw-row" data-tw="transparency-off" data-cat="windows" data-desc="The taskbar and Windows menus are no longer transparent." data-cost="The taskbar and menus look simpler."><span><b>Turn off Windows transparency effects</b><small>The taskbar and Windows menus are no longer transparent.</small></span><span class="sw"></span></button>
+<!-- /tweaks -->
+                </div>
+                <div class="tw-side">
+                  <div class="tw-icon js-twicon"></div>
+                  <div class="t js-twt"></div>
+                  <p class="js-twd"></p>
+                  <p><b>Cost:</b> <span class="js-twc"></span></p>
+                  <p><b>Undo:</b> with the same switch. Before the first change Forge makes a Windows restore point.</p>
+                  <div class="tw-foot"><span class="js-twn">No changes</span><button class="mini-apply js-twapply" disabled>Apply</button></div>
+                </div>
+              </div>
+            </div>
 
-      <div class="feature flip">
-        <div class="text">
-          <h3>Tools for every game</h3>
-          <p>For Rust: a raid calculator, electrical circuits, monuments, your own server. For CS2: a crosshair editor, economy and a weapon guide. PUBG, Dota 2 and Deadlock profiles, the Fortnite item shop and more.</p>
-          <ul><li>Aim warm-up, mouse and DPI test, sensitivity converter</li><li>Rust and PUBG player stats, Apex map rotation</li><li>A zapret fix for Easy Anti-Cheat games</li></ul>
+            <div class="panel" data-shot="hardware" data-title="Forge · Computer">
+              <div class="hw-cards">
+                <div class="hw-card"><small>Processor</small><b>AMD Ryzen 5 7600</b><span>6 cores · 12 threads</span></div>
+                <div class="hw-card"><small>Graphics card</small><b>GeForce RTX 4060</b><span>8 GB · driver up to date</span></div>
+                <div class="hw-card warn js-ram"><small>Memory</small><b>32 GB DDR5</b><span>4800 of 6000 MT/s</span></div>
+                <div class="hw-card warn js-mon"><small>Monitor</small><b>2560 × 1440</b><span class="js-hz">60 of 165 Hz</span></div>
+                <div class="hw-card"><small>Game drive</small><b>NVMe SSD</b><span>212 GB free</span></div>
+              </div>
+              <div class="advs">
+                <div class="adv js-adv-xmp">
+                  <div class="adv-h"><i class="d"></i><b>Memory runs slower than it can</b><button class="ghost-sm js-xmp">How to fix</button></div>
+                  <p>The modules are rated for 6000 MT/s but run at 4800: the XMP/EXPO profile is off in the BIOS. Games limited by the processor feel this the most.</p>
+                  <ol><li>BIOS → find XMP (Intel) or EXPO / DOCP (AMD).</li><li>Choose Profile 1.</li><li>Save and reboot — Forge checks the speed itself.</li></ol>
+                </div>
+                <div class="adv js-adv-hz">
+                  <div class="adv-h"><i class="d"></i><b class="js-hzt">The monitor runs at 60 Hz instead of 165</b><button class="ghost-sm js-hzfix">Fix</button></div>
+                  <p class="js-hzp">The refresh rate can be raised right from Forge. If the screen goes dark, it comes back by itself in 15 seconds.</p>
+                </div>
+                <div class="adv ok"><div class="adv-h"><i class="d"></i><b>Graphics card, driver and drive are fine</b></div></div>
+              </div>
+              <div class="pnote">An example PC. In the app, it is your hardware and your advice.</div>
+            </div>
+
+            <div class="panel" data-shot="network" data-title="Forge · Network">
+              <div class="net-speed">
+                <div class="ns"><small>Download</small><b data-ns="down">—</b><em>Mbit/s</em></div>
+                <div class="ns"><small>Upload</small><b data-ns="up">—</b><em>Mbit/s</em></div>
+                <div class="ns"><small>Ping</small><b data-ns="ping">—</b><em>ms</em></div>
+                <div class="ns"><small>Ping under load</small><b data-ns="load">—</b><em>ms</em></div>
+                <button class="mini-apply js-speed">Speed test</button>
+              </div>
+              <div class="regions">
+                <div class="h">Ping to game servers<button class="ghost-sm js-ping">Check</button></div>
+                <div class="rg" data-ms="14"><span>Moscow</span><span class="bar"><i></i></span><b>—</b></div>
+                <div class="rg" data-ms="38"><span>Stockholm</span><span class="bar"><i></i></span><b>—</b></div>
+                <div class="rg" data-ms="41"><span>Warsaw</span><span class="bar"><i></i></span><b>—</b></div>
+                <div class="rg" data-ms="46"><span>Frankfurt</span><span class="bar"><i></i></span><b>—</b></div>
+                <div class="rg" data-ms="58"><span>London</span><span class="bar"><i></i></span><b>—</b></div>
+                <div class="rg" data-ms="121"><span>New York</span><span class="bar"><i></i></span><b>—</b></div>
+              </div>
+              <div class="pnote">An example result. DNS only speeds up looking addresses up — it does not lower in-game ping, and Forge says so.</div>
+            </div>
+
+            <div class="panel" data-shot="tools" data-title="Forge · Tools">
+              <div class="tgames js-tgames"></div>
+              <div class="tools-body">
+                <div>
+                  <div class="tlist js-tlist"></div>
+                  <div class="also js-common"></div>
+                </div>
+                <div class="try">
+                  <div class="js-try" data-for="rust">
+                    <div class="raid-h">Raid calculator<small class="js-raidbuild"></small></div>
+                    <select class="sel js-target" aria-label="What to raid"></select>
+                    <div class="qty">How many: <button class="js-minus" aria-label="Fewer">−</button><b class="js-qty">1</b><button class="js-plus" aria-label="More">+</button></div>
+                    <div class="exps js-exps"></div>
+                  </div>
+                  <div class="js-try" data-for="cs2 valorant">
+                    <div class="raid-h">Crosshair editor<small>preview as in game</small></div>
+                    <div class="xh-view js-xh"><i></i><i></i><i></i><i></i><b></b></div>
+                    <label class="xh-row">Length<input type="range" min="1" max="12" value="5" data-xh="len"></label>
+                    <label class="xh-row">Gap<input type="range" min="0" max="10" value="3" data-xh="gap"></label>
+                    <label class="xh-row">Thickness<input type="range" min="1" max="4" value="2" data-xh="w"></label>
+                    <div class="xh-colors js-xhc"><button style="--c:#4cff6a" class="on"></button><button style="--c:#00e5ff"></button><button style="--c:#ffe14c"></button><button style="--c:#ff4ce0"></button><button style="--c:#ffffff"></button></div>
+                    <label class="xh-row xh-dot"><input type="checkbox" data-xh="dot"> Center dot</label>
+                  </div>
+                  <div class="js-try" data-for="*">
+                    <div class="raid-h">Try it in the app</div>
+                    <p class="pnote" style="margin-top:6px">These tools work with the game data and your PC, so they live in the app itself.</p>
+                  </div>
+                </div>
+              </div>
+              <script type="application/json" id="tools-data">{"common":[{"title":"Mouse, screen and sound test","text":"Polling rate, DPI, Hz, dead pixels, channels"},{"title":"Warm-up","text":"Flicks, tracking and reaction in 2 minutes"},{"title":"Sensitivity","text":"cm per 360°, other games, DPI"},{"title":"News and servers","text":"Are the servers up, what's in the update"},{"title":"Game cleanup","text":"Replays, demos, logs and shader cache"}],"rust":[{"title":"Player stats","text":"Hours, kills, K/D, gathering, friends' bans"},{"title":"Raid calculator","text":"Explosives, sulfur and crafting"},{"title":"Gene breeding","text":"The best genes from your clones"},{"title":"Camera codes","text":"Cameras at every monument"},{"title":"Cleanup","text":"Maps, cache and temporary files"},{"title":"Server monitoring","text":"Players, wipes, queue"},{"title":"Smelting","text":"Time, fuel, furnaces"},{"title":"Server map","text":"Terrain and monuments from the game file"},{"title":"Electrical circuits","text":"Build and check a circuit"},{"title":"Monuments","text":"Keycards, radiation, recyclers"},{"title":"Inventory value","text":"Skins and Market prices"},{"title":"Blueprints","text":"What to learn this wipe and how much scrap"},{"title":"Encyclopedia","text":"Items, crafting, recycling, loot"}],"cs2":[{"title":"Crosshair","text":"Editor with preview, CS2 codes, write to the game"},{"title":"Practice","text":"Workshop maps and a practice config"},{"title":"Economy","text":"How much money you'll have next round"},{"title":"Weapons","text":"Damage by zone and distance, armor, comparison"},{"title":"Viewmodel and radar","text":"Viewmodel FOV, offsets, radar, on-screen FPS"},{"title":"Server monitoring","text":"Players and ping on community servers, one-click join"},{"title":"Demos","text":"Size, command to watch, deletion"}],"valorant":[{"title":"Crosshair","text":"Editor with preview, Valorant profile codes"},{"title":"Weapons","text":"Damage by distance, shots to kill, comparison"},{"title":"Maps","text":"Minimap callouts in English and Russian"},{"title":"Agents","text":"Roles and every ability with its key"}],"fortnite":[{"title":"Item shop","text":"What's in the shop today, discounts, favorites"},{"title":"Island map","text":"All places and landmarks, where to drop"}],"dota2":[{"title":"Heroes","text":"Win rate by rank, abilities and talents"},{"title":"My profile","text":"Rank, recent matches, your heroes"},{"title":"Items","text":"Prices, build and description of every item"}],"gta5":[{"title":"Solo session","text":"Stay alone in a public session"},{"title":"Benchmark","text":"Built-in test results by scene, comparison"}],"apex":[{"title":"Map rotation","text":"Which map is up now and how long is left"},{"title":"Predator threshold","text":"How much RP the top 750 needs on each platform"}],"robrun":[{"title":"Servers and maintenance","text":"Are the servers up, regions, support"},{"title":"Launch and sign-in","text":"Why it won't start, anti-cheat, logs for support"}],"deadlock":[{"title":"Heroes","text":"Win rate, abilities and their upgrades"},{"title":"My profile","text":"Rank, recent matches, your heroes"},{"title":"Items","text":"Price, effects and what each one is built from"}],"pubg":[{"title":"My profile","text":"Ranked, season stats and recent matches"}]}</script>
+              <script type="application/json" id="raid-data">{"build":"22.09.2026","explosives":{"c4":{"short":"C4","sulfur":2200},"rocket":{"short":"Rockets","sulfur":1400},"satchel":{"short":"Satchels","sulfur":480},"beancan":{"short":"Beancans","sulfur":120},"ammo":{"short":"Explosive ammo","sulfur":25}},"targets":[{"id":"wall-wood","title":"Wooden wall","group":"walls","cost":{"c4":1,"rocket":2,"satchel":3,"ammo":49,"beancan":18}},{"id":"wall-stone","title":"Stone wall","group":"walls","cost":{"c4":2,"rocket":4,"satchel":10,"ammo":185,"beancan":64}},{"id":"wall-metal","title":"Sheet metal wall","group":"walls","cost":{"c4":4,"rocket":8,"satchel":23,"ammo":400,"beancan":131}},{"id":"wall-armored","title":"Armored wall","group":"walls","cost":{"c4":8,"rocket":15,"satchel":46,"ammo":799,"beancan":262}},{"id":"door-wood","title":"Wooden door","group":"doors","cost":{"c4":1,"rocket":1,"satchel":2,"ammo":19,"beancan":7}},{"id":"door-metal","title":"Sheet metal door","group":"doors","cost":{"c4":1,"rocket":2,"satchel":4,"ammo":63,"beancan":21}},{"id":"door-garage","title":"Garage door","group":"doors","cost":{"c4":2,"rocket":3,"satchel":9,"ammo":150,"beancan":49}},{"id":"door-armored","title":"Armored door","group":"doors","cost":{"c4":3,"rocket":5,"satchel":15,"ammo":250,"beancan":82}},{"id":"hatch","title":"Ladder hatch","group":"openings","cost":{"c4":1,"rocket":2,"satchel":4,"ammo":63,"beancan":21}},{"id":"hatch-armored","title":"Armored hatch","group":"openings","cost":{"c4":3,"rocket":5,"satchel":15,"ammo":250,"beancan":82}},{"id":"bars","title":"Metal window bars","group":"openings","cost":{"c4":2,"rocket":4,"satchel":12,"ammo":200,"beancan":66}},{"id":"glass","title":"Reinforced glass window","group":"openings","cost":{"c4":2,"rocket":3,"satchel":9,"ammo":140,"beancan":46}},{"id":"hew-wood","title":"High external wooden wall","group":"external","cost":{"c4":2,"rocket":3,"satchel":6,"ammo":98,"beancan":36}},{"id":"hew-stone","title":"High external stone wall","group":"external","cost":{"c4":2,"rocket":4,"satchel":10,"ammo":185,"beancan":64}},{"id":"tc","title":"Tool Cupboard (TC)","group":"other","cost":{"c4":1,"rocket":1,"satchel":1,"ammo":10,"beancan":4}}]}</script>
+            </div>
+
+          </div>
         </div>
-        <img src="../assets/shots/en/tools.png" alt="Forge tools for Rust" loading="lazy" width="2560" height="1600">
       </div>
     </div>
   </section>
 
-  <section class="honest">
+
+  <section id="games">
     <div class="wrap">
-      <h2>No risk to the game or the system</h2>
+      <div class="center reveal">
+        <div class="kicker">Games</div>
+        <h2>One app for your games</h2>
+        <p class="sub">Each game gets its own settings and tools, not one shared set of checkboxes.</p>
+      </div>
+      <div class="games">
+<!-- games -->
+        <div class="game reveal" tabindex="0" style="--c1:#c4421a;--c2:#2a0f08"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg" alt="" loading="lazy"></span><span class="gt">Rust<span class="gs">Facepunch Studios</span></span><span class="gd">Tweaks, graphics, binds, configs, your own server and tools</span></div>
+        <div class="game reveal d1" tabindex="0" style="--c1:#d89a2b;--c2:#1b1407"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg" alt="" loading="lazy"></span><span class="gt">Counter-Strike 2<span class="gs">Valve</span></span><span class="gd">Graphics, visibility, interface and network</span></div>
+        <div class="game reveal d2" tabindex="0" style="--c1:#e8432e;--c2:#160807"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4262460/db8e0cf43c9475b96fb9446b4908de79fcb9f619/header.jpg" alt="" loading="lazy"></span><span class="gt">ROB RUN<span class="gs">Kefir</span></span><span class="gd">Shadows, grass, water and draw distance</span></div>
+        <div class="game reveal d3" tabindex="0" style="--c1:#b8322a;--c2:#160908"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg" alt="" loading="lazy"></span><span class="gt">Dota 2<span class="gs">Valve</span></span><span class="gd">Graphics and display</span></div>
+        <div class="game reveal" tabindex="0" style="--c1:#ff4655;--c2:#1a0b10"><span class="art"><img src="../assets/covers/valorant.webp" alt="" loading="lazy" style="object-fit:contain;filter:invert(1) hue-rotate(180deg)"></span><span class="gt">Valorant<span class="gs">Riot Games</span></span><span class="gd">Graphics and FPS cap</span></div>
+        <div class="game reveal d1" tabindex="0" style="--c1:#da292a;--c2:#170a0a"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/dc5c390e9a273a7248f75c1b2d59987f6179323c/header_alt_assets_7.jpg" alt="" loading="lazy"></span><span class="gt">Apex Legends<span class="gs">Respawn</span></span><span class="gd">videoconfig: shadows, lighting, effects</span></div>
+        <div class="game reveal d2" tabindex="0" style="--c1:#7b5cff;--c2:#0f0b24"><span class="art"><img src="../assets/covers/fortnite.webp" alt="" loading="lazy" style="object-fit:cover;object-position:50% 10%"></span><span class="gt">Fortnite<span class="gs">Epic Games</span></span><span class="gd">Graphics and FPS cap</span></div>
+        <div class="game reveal d3" tabindex="0" style="--c1:#f2a900;--c2:#1a1405"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/578080/841ea38bc58cabb70aef65365cf50bc2d79329d9/header.jpg" alt="" loading="lazy"></span><span class="gt">PUBG: Battlegrounds<span class="gs">Krafton</span></span><span class="gd">Graphics, display and interface</span></div>
+        <div class="game reveal" tabindex="0" style="--c1:#c9a36b;--c2:#15110b"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg" alt="" loading="lazy"></span><span class="gt">Deadlock<span class="gs">Valve</span></span><span class="gd">Graphics and display</span></div>
+        <div class="game reveal d1" tabindex="0" style="--c1:#5aa05f;--c2:#0b130c"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg" alt="" loading="lazy"></span><span class="gt">GTA V<span class="gs">Rockstar Games</span></span><span class="gd">settings.xml: graphics and the city</span></div>
+        <div class="game reveal soon d2" tabindex="0" style="--c1:#9a8866;--c2:#14120d"><span class="art"><img src="../assets/covers/tarkov.png" alt="" loading="lazy" style="object-fit:cover;object-position:50% 85%"></span><span class="gt">Escape from Tarkov<span class="gs">Battlestate Games</span></span><span class="gd">In development</span></div>
+        <div class="game reveal soon d3" tabindex="0" style="--c1:#7f8a6a;--c2:#11130d"><span class="art"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg" alt="" loading="lazy"></span><span class="gt">Call of Duty<span class="gs">Activision</span></span><span class="gd">In development</span></div>
+<!-- /games -->
+      </div>
+      <div class="nums">
+        <div class="num reveal"><b data-count data-n="games">10</b><span>games in the app already</span></div>
+        <div class="num reveal d1"><b data-count data-n="tools">44</b><span>tools for games</span></div>
+        <div class="num reveal d2"><b>1 click</b><span>to put everything back</span></div>
+        <div class="num reveal d3"><b>0 ₽</b><span>for looking, advice and undo</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="center reveal">
+        <div class="kicker">Safety</div>
+        <h2>No risk to the game or the system</h2>
+      </div>
       <div class="cards">
-        <div class="card"><div class="tag">Reversible</div><h4>Everything comes back</h4><p>Forge copies files before writing, and every action goes into the history. Undo always works, even without a subscription.</p></div>
-        <div class="card"><div class="tag">Anti-cheats</div><h4>Settings only</h4><p>Forge changes the same settings files as the game's own menu and never touches its memory or processes. It is not a cheat or a mod.</p></div>
-        <div class="card"><div class="tag">Windows</div><h4>Protection stays on</h4><p>Forge never turns off Windows Defender, updates or important services without your consent. Every tweak says what it gives and what it costs.</p></div>
+        <div class="card reveal"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span><h4>Everything comes back</h4><p>Forge copies files before writing, and every action goes into the history. Undo always works, even without a subscription.</p></div>
+        <div class="card reveal d1"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h4>Settings only</h4><p>Forge changes the same settings files as the game's own menu and never touches its memory or processes. It is not a cheat or a mod.</p></div>
+        <div class="card reveal d2"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></svg></span><h4>Protection stays on</h4><p>Forge never turns off Windows Defender, updates or important services without your consent. Every tweak says what it gives and what it costs.</p></div>
       </div>
     </div>
   </section>
 
   <section id="pro">
-    <div class="wrap">
-      <h2>Free and Forge Pro</h2>
-      <p class="sub">Looking, learning and undoing are free. Applying changes and running checks need a subscription.</p>
+    <div class="wrap center">
+      <div class="reveal">
+        <div class="kicker">Price</div>
+        <h2>Free and Forge Pro</h2>
+        <p class="sub">Looking, learning and undoing are free. Applying changes and running checks need a subscription.</p>
+      </div>
       <div class="plans">
-        <div class="plan">
+        <div class="plan reveal">
           <div class="name">Free</div>
           <div class="price"><b>0 ₽</b></div>
-          <ul><li>Settings and hardware recommendations</li><li>Guides and tools</li><li>Undo any change Forge made</li><li>Launching games</li></ul>
+          <ul>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Settings and hardware recommendations</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Guides and tools</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Undo any change Forge made</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Launching games</li>
+          </ul>
         </div>
-        <div class="plan pro">
-          <div class="name">Forge Pro</div>
+        <div class="plan pro reveal d1">
+          <div class="name">Forge Pro <span class="badge">All included</span></div>
           <div class="price"><b>149 ₽</b> for 30 days · trial week 39 ₽</div>
-          <ul><li>Applying game settings and Windows tweaks</li><li>Network test, server ping, PC diagnostics</li><li>Ready-made sets together with Windows tweaks</li><li>Settings sets kept in the cloud</li></ul>
+          <ul>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Applying game settings and Windows tweaks</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Network test, server ping, PC diagnostics</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Ready-made sets together with Windows tweaks</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Settings sets kept in the cloud</li>
+          </ul>
           <div class="note">Pay by card, through SBP (Russian bank transfer) or with crypto. The subscription does not renew on its own.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="faq">
-    <div class="wrap faq">
-      <h2>FAQ</h2>
-      <details><summary>Can I get banned?</summary><p>Forge only changes the game's settings files, the same thing that happens when you move sliders in its menu. It never interferes with the game's memory or processes. Before writing, it asks you to close the game so the game doesn't overwrite the files on exit.</p></details>
-      <details><summary>How many FPS will I get?</summary><p>It depends on the hardware and the game, so Forge promises nothing. It explains what each setting does, and the game itself shows FPS before and after: in Rust, for example, console F1 → perf 1.</p></details>
-      <details><summary>Do I need an account?</summary><p>You can download Forge and use the free features without an account. A subscription needs a sign-in with a code sent by e-mail.</p></details>
-      <details><summary>What if something goes wrong?</summary><p>Every change can be undone in “Settings → History and backups”, and Forge makes a restore point before Windows tweaks. If you need help, message support on Telegram.</p></details>
-      <details><summary>What are the system requirements?</summary><p>Windows 10 or 11, 64-bit. About 150 MB of disk space. Forge installs everything else itself.</p></details>
+  <section id="ask">
+    <div class="wrap">
+      <div class="center reveal">
+        <div class="kicker">FAQ</div>
+        <h2>Ask, and get a short answer</h2>
+      </div>
+      <div class="ask">
+        <div class="qs js-qs reveal d1">
+          <button class="q" data-a="ban"><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Can I get banned?</button>
+          <button class="q" data-a="fps"><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>How many FPS will I get?</button>
+          <button class="q" data-a="account"><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Do I need an account?</button>
+          <button class="q" data-a="wrong"><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>What if something goes wrong?</button>
+          <button class="q" data-a="req"><svg class="i" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>What are the system requirements?</button>
+        </div>
+        <div class="window chat reveal d2">
+          <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title"><img src="../assets/logo.png" alt="">Questions about Forge</span></div>
+          <div class="log js-log" aria-live="polite">
+            <div class="msg bot">Hi! Pick a question for a short, honest answer.</div>
+          </div>
+          <div class="foot">No answer here? <a href="https://t.me/notefory0u" target="_blank" rel="noopener">Message support</a></div>
+        </div>
+      </div>
+      <template id="answers">
+        <p data-a="ban">Forge only changes the game's settings files, the same thing that happens when you move sliders in its menu. It never interferes with the game's memory or processes. Before writing, it asks you to close the game so the game doesn't overwrite the files on exit.</p>
+        <p data-a="fps">It depends on the hardware and the game, so Forge promises nothing. It explains what each setting does, and the game itself shows FPS before and after: in Rust, for example, console F1 → perf 1.</p>
+        <p data-a="account">You can download Forge and use the free features without an account. A subscription needs a sign-in with a code sent by e-mail.</p>
+        <p data-a="wrong">Every change can be undone in “Settings → History and backups”, and Forge makes a restore point before Windows tweaks. If you need help, message support on Telegram.</p>
+        <p data-a="req">Windows 10 or 11, 64-bit. About 150 MB of disk space. Forge installs everything else itself.</p>
+      </template>
     </div>
   </section>
 
-  <section class="final">
+  <section id="get">
     <div class="wrap">
-      <h2>Try Forge</h2>
-      <p class="sub">For free: see what Forge suggests for your PC before changing anything.</p>
-      <div class="cta">
-        <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer">Download for Windows</a>
-        <a class="btn btn-ghost" href="https://t.me/ForgeOptimizer" target="_blank" rel="noopener">Telegram channel</a>
+      <div class="center reveal">
+        <div class="kicker">Get started</div>
+        <h2>Three steps to your own setup</h2>
       </div>
-      <div class="req"><span>Windows 10 / 11 · 64-bit</span><span class="js-version"></span></div>
+      <div class="get">
+        <div class="steps">
+          <div class="step reveal"><span class="n">1</span><div><b>Download and install</b><span>The installer sets up everything it needs. Administrator rights are not required.</span></div></div>
+          <div class="step reveal d1"><span class="n">2</span><div><b>Pick a game</b><span>Forge finds it on the PC, reads the current settings and looks at the hardware.</span></div></div>
+          <div class="step reveal d2"><span class="n">3</span><div><b>Compare and apply</b><span>The “For this PC” set or your own. A copy of the old settings is kept automatically.</span></div></div>
+        </div>
+        <div class="dl reveal d1">
+          <svg class="win-logo i f" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm8.5-1.2L21 3v8.5h-9.5V4.3ZM3 12.5h7.5v7.1L3 18.5v-6Zm8.5 0H21V21l-9.5-1.3v-7.2Z"/></svg>
+          <h3>Forge for Windows</h3>
+          <a class="btn btn-primary js-download" href="https://t.me/ForgeOptimizer"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Download for free</a>
+          <span class="js-version">Windows 10 / 11 · 64-bit</span>
+          <div class="more">
+            <a href="https://t.me/ForgeOptimizer" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.63l-19 6.5a.5.5 0 0 0-.02.93l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></svg>Channel</a>
+            <a href="https://t.me/notefory0u" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>Support</a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>© Forge. Not affiliated with the game developers.</span>
+    <span>© Forge. Not affiliated with the game developers. Game names and cover art belong to their owners. Icons: Lucide (ISC).</span>
     <div class="links">
       <a href="../legal/privacy.html">Privacy policy (in Russian)</a>
       <a href="../legal/offer.html">Terms of service (in Russian)</a>
@@ -269,6 +763,9 @@
   const LANG = document.documentElement.lang === 'en' ? 'en' : 'ru'
   const rpc = (fn, args) => fetch(`${SB}/rest/v1/rpc/${fn}`, { method: 'POST', keepalive: true, headers: { apikey: KEY, 'content-type': 'application/json' }, body: JSON.stringify(args) })
   const store = (f) => { try { return f() } catch { return null } }
+  const $ = (s, el = document) => el.querySelector(s)
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)]
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // An invite code (?ref=) is kept for 30 days, so a visitor who comes back later still gets it. Where visitors come from:
   // utm labels and the referring site's domain only, no IP address, no cookie.
@@ -282,12 +779,14 @@
   const visit = { p_code: REF, p_source: q.get('utm_source'), p_medium: q.get('utm_medium'), p_campaign: q.get('utm_campaign'), p_referrer: from, p_lang: LANG }
   const LIVE = location.hostname.endsWith('github.io') // a local preview of the site is not counted
   if (LIVE && !store(() => sessionStorage.getItem('forge.visit'))) { store(() => sessionStorage.setItem('forge.visit', '1')); rpc('ref_track', { p_event: 'visit', ...visit }).catch(() => {}) }
-  document.querySelectorAll('.js-download').forEach((a) => a.addEventListener('click', () => { if (LIVE) rpc('ref_track', { p_event: 'download', ...visit }).catch(() => {}) }))
+  $$('.js-download').forEach((a) => a.addEventListener('click', () => { if (LIVE) rpc('ref_track', { p_event: 'download', ...visit }).catch(() => {}) }))
 
-  const days = (n) => LANG === 'en' ? `${n} ${n === 1 ? 'day' : 'days'}` : `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'day' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'days' : 'days'}`
+  // The Russian forms are written as codes: the English page is made by replacing Russian text, and these short words would hit longer ones.
+  const RU_DAYS = ['\u0434\u0435\u043d\u044c', '\u0434\u043d\u044f', '\u0434\u043d\u0435\u0439']
+  const days = (n) => LANG === 'en' ? `${n} ${n === 1 ? 'day' : 'days'}` : `${n} ${RU_DAYS[n % 10 === 1 && n % 100 !== 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2]}`
   if (REF) rpc('ref_info', { p_code: REF }).then((r) => r.json()).then((n) => {
     if (!(n > 0)) return
-    const gift = document.querySelector('.js-gift')
+    const gift = $('.js-gift')
     gift.textContent = `Invited: ${days(n)} of Forge Pro free, the code works in the app by itself`
     gift.hidden = false
   }).catch(() => {})
@@ -298,11 +797,278 @@
   fetch(MANIFEST, { cache: 'no-store' }).then((r) => r.json()).then((m) => {
     if (!m || !m.url) return
     const url = REF ? `${m.url}?download=${encodeURIComponent(`ForgeSetup-${m.version}-ref-${REF}.exe`)}` : m.url
-    document.querySelectorAll('.js-download').forEach((a) => { a.href = url; a.removeAttribute('target') })
+    $$('.js-download').forEach((a) => { a.href = url; a.removeAttribute('target') })
     const mb = m.size ? ` · ${(m.size / 1048576).toFixed(0)} MB` : ''
-    document.querySelector('.js-meta').textContent = `Version ${m.version}${mb} · Windows 10 and 11 · free`
-    document.querySelector('.js-version').textContent = `Version ${m.version}`
+    $('.js-meta').textContent = `Version ${m.version}${mb} · Windows 10 and 11 · free`
+    $('.js-version').textContent = `Version ${m.version}${mb} · Windows 10 / 11 · 64-bit`
   }).catch(() => {})
+
+  // ---------- appear on scroll ----------
+  const seen = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); seen.unobserve(e.target) } }), { threshold: .12 })
+  $$('.reveal').forEach((el) => seen.observe(el))
+
+  // ---------- before / after: drag anywhere on the picture ----------
+  const SCENES = $('.js-compare img').getAttribute('src').replace(/[^/]+$/, '') // the scenes folder, as this page sees it
+  $$('.js-compare').forEach((c) => {
+    const at = (x) => { const r = c.getBoundingClientRect(); c.style.setProperty('--x', `${Math.max(2, Math.min(98, ((x - r.left) / r.width) * 100))}%`) }
+    c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); at(e.clientX) })
+    c.addEventListener('pointermove', (e) => { if (c.hasPointerCapture(e.pointerId)) at(e.clientX) })
+  })
+
+  // ---------- the settings screen mock-up: any game, its own sets and settings from the app (site/data.json) ----------
+  const DEMO = JSON.parse($('#demo-data').textContent)
+  const demo = $('#demo')
+  const view = $('.js-demoview', demo), coverView = $('.js-coverview', demo)
+  let game = null, current = null, picked = null, toastT = 0
+  const toast = (text) => { const t = $('.js-toast', demo); $('span', t).textContent = text; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 3800) }
+  const coverImg = (img, g) => { img.src = g.cover; img.style.objectFit = g.coverFit ?? 'cover'; img.style.filter = g.coverFilter ?? ''; img.style.objectPosition = g.coverPos ?? 'center' }
+  const RUST_SCENE = { fps: 'preset-fps', balance: 'preset-balance', quality: 'preset-quality' }
+  const show = () => {
+    const d = DEMO.demo[game.id], top = d.presets[d.presets.length - 1].id
+    const now = current ?? top, next = picked ?? now
+    $$('.js-presets .pick', demo).forEach((b) => b.classList.toggle('on', b.dataset.preset === next))
+    const diffs = d.rows.filter((r) => r.values[next] !== r.values[now])
+    $$('.js-rows .row', demo).forEach((el, i) => {
+      const r = d.rows[i], changed = r.values[next] !== r.values[now]
+      $('.was', el).textContent = changed ? r.values[now] : ''
+      $('b', el).textContent = r.values[next]
+      el.classList.toggle('dirty', changed)
+    })
+    const isRust = game.id === 'rust'
+    view.hidden = !isRust; coverView.hidden = isRust
+    if (isRust) { $('.after', view).src = `${SCENES}${RUST_SCENE[next] ?? 'preset-quality'}.svg`; $('.before', view).src = `${SCENES}${RUST_SCENE[now] ?? 'preset-quality'}.svg` }
+    const p = d.presets.find((x) => x.id === next)
+    $('.js-title', demo).textContent = picked ? p.title : current ? `${p.title} — applied` : 'Pick a set'
+    $('.js-note', demo).textContent = picked ? (p.text || '') : 'Everything is at maximum now. Pick a set to see what changes on the right. Nothing is written until “Apply”.'
+    $('.js-changes', demo).replaceChildren(...(picked ? [...diffs.map((r) => `${r.label}: ${r.values[now]} → ${r.values[next]}`), diffs.length ? '+ safe Windows tweaks, after a restore point' : 'Already matches the current settings'] : []).map((t, i, a) => {
+      const li = document.createElement('li'); li.textContent = t; li.style.animationDelay = `${i * 50}ms`
+      if (i === a.length - 1) li.className = 'ws'
+      return li
+    }))
+    const apply = $('.js-apply', demo)
+    apply.disabled = !picked || !diffs.length
+    apply.textContent = picked && diffs.length ? `Apply (${diffs.length})` : 'Apply'
+    $('.js-undo', demo).disabled = !picked && !current
+  }
+  const pickGame = (id) => {
+    game = DEMO.games.find((g) => g.id === id); current = null; picked = null
+    const d = DEMO.demo[id]
+    $$('.js-games button', demo).forEach((b) => b.classList.toggle('on', b.dataset.game === id))
+    $('.js-wtitle', demo).textContent = `Forge · Game settings · ${game.name}`
+    $('.js-gname', demo).textContent = game.name
+    coverImg($('.js-gcover', demo), game); coverImg($('img', coverView), game)
+    $('.js-presets', demo).replaceChildren(...d.presets.map((p) => {
+      const b = document.createElement('button'); b.className = 'pick'; b.dataset.preset = p.id
+      const t = document.createElement('b'); t.textContent = p.title
+      const s = document.createElement('small'); s.textContent = p.text || ''
+      b.append(t, s); b.addEventListener('click', () => { picked = p.id === (current ?? d.presets[d.presets.length - 1].id) ? null : p.id; view.style.setProperty('--x', '50%'); show() })
+      return b
+    }))
+    $('.js-presets', demo).style.setProperty('--n', d.presets.length)
+    $('.js-rows', demo).replaceChildren(...d.rows.map((r) => {
+      const el = document.createElement('div'); el.className = 'row'
+      const l = document.createElement('span'); l.textContent = r.label
+      const w = document.createElement('s'); w.className = 'was'
+      const v = document.createElement('b')
+      el.append(l, w, v); return el
+    }))
+    show()
+  }
+  $('.js-games', demo).replaceChildren(...DEMO.games.filter((g) => DEMO.demo[g.id]).map((g) => {
+    const b = document.createElement('button'); b.dataset.game = g.id; b.title = g.name
+    const img = document.createElement('img'); img.alt = g.name; img.loading = 'lazy'; coverImg(img, g)
+    b.append(img); b.addEventListener('click', () => pickGame(g.id)); return b
+  }))
+  $('.js-apply', demo).addEventListener('click', (e) => {
+    const btn = e.currentTarget
+    btn.classList.add('busy'); btn.disabled = true
+    setTimeout(() => { btn.classList.remove('busy'); current = picked; picked = null; show(); toast('Applied. A copy of the previous settings is kept — one button puts it back.') }, 900)
+  })
+  $('.js-undo', demo).addEventListener('click', () => {
+    if (picked) { picked = null; show(); return }
+    current = null; show(); toast('Back as it was: the settings are restored from the copy.')
+  })
+  pickGame(DEMO.games.find((g) => g.id === 'cs2' && DEMO.demo.cs2) ? 'cs2' : Object.keys(DEMO.demo)[0])
+
+  // ---------- live panels: tabs switch them, and move on by themselves until the visitor clicks or plays with one ----------
+  const tour = $('.js-tour')
+  let tourT = 0, auto = true
+  const stopAuto = () => { auto = false; tour.classList.add('paused'); clearTimeout(tourT) }
+  function pickTab(id, byUser) {
+    if (byUser) stopAuto()
+    $$('.tab', tour).forEach((t) => t.classList.toggle('on', t.dataset.shot === id))
+    $$('.panel', tour).forEach((p) => p.classList.toggle('on', p.dataset.shot === id))
+    $('.js-ptitle', tour).textContent = $(`.panel[data-shot="${id}"]`, tour).dataset.title
+    clearTimeout(tourT)
+    if (auto && !reduced) tourT = setTimeout(() => { const tabs = $$('.tab', tour); const i = tabs.findIndex((t) => t.classList.contains('on')); pickTab(tabs[(i + 1) % tabs.length].dataset.shot) }, 7000)
+  }
+  $$('.tab', tour).forEach((t) => t.addEventListener('click', () => pickTab(t.dataset.shot, true)))
+  $('.panels', tour).addEventListener('pointerdown', stopAuto)
+  new IntersectionObserver((es) => { if (es[0].isIntersecting && auto) { pickTab($('.tab.on', tour).dataset.shot) } }, { threshold: .4 }).observe(tour)
+
+  // Windows tweaks: each row turns its tweak on or off; the side shows what it gives and costs (texts from the app's catalog)
+  const ICONS = {
+    game: '<rect width="20" height="12" x="2" y="6" rx="2"/><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01"/>',
+    power: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+    input: '<path d="M12.59 21.38a.5.5 0 0 1-.94-.04L4.04 4.69a.5.5 0 0 1 .65-.65l16.65 7.61a.5.5 0 0 1 .04.94l-6.37 2.13a2 2 0 0 0-1.26 1.26z"/>',
+    windows: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/>',
+    gpu: '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/>',
+  }
+  const twApply = $('.js-twapply')
+  let twApplied = new Set()
+  const twFocus = (row) => {
+    $$('.tw-row', tour).forEach((r) => r.classList.toggle('focus', r === row))
+    $('.js-twicon').innerHTML = `<svg class="i" viewBox="0 0 24 24">${ICONS[row.dataset.cat] ?? ICONS.windows}</svg>`
+    $('.js-twt').textContent = $('b', row).textContent
+    $('.js-twd').textContent = row.dataset.desc
+    $('.js-twc').textContent = row.dataset.cost
+  }
+  const twCount = () => {
+    const on = new Set($$('.tw-row.on', tour).map((r) => r.dataset.tw))
+    const n = [...on].filter((x) => !twApplied.has(x)).length + [...twApplied].filter((x) => !on.has(x)).length
+    $('.js-twn').textContent = n ? `Changed: ${n}` : 'No changes'
+    twApply.disabled = !n
+    twApply.textContent = n ? `Apply (${n})` : 'Apply'
+  }
+  $$('.tw-row', tour).forEach((r) => {
+    r.addEventListener('pointerenter', () => twFocus(r))
+    r.addEventListener('click', () => { r.classList.toggle('on'); twFocus(r); twCount() })
+  })
+  twApply.addEventListener('click', () => {
+    twApply.classList.add('busy'); twApply.disabled = true
+    setTimeout(() => { twApply.classList.remove('busy'); twApplied = new Set($$('.tw-row.on', tour).map((r) => r.dataset.tw)); twCount(); $('.js-twn').textContent = 'Applied, a restore point is made' }, 800)
+  })
+  if ($('.tw-row', tour)) twFocus($('.tw-row', tour))
+
+  // computer: the XMP advice opens its steps, the refresh rate is fixed in place
+  $('.js-xmp').addEventListener('click', (e) => { const a = $('.js-adv-xmp'); a.classList.toggle('open'); e.currentTarget.textContent = a.classList.contains('open') ? 'Hide' : 'How to fix' })
+  $('.js-hzfix').addEventListener('click', (e) => {
+    const b = e.currentTarget; b.disabled = true; b.textContent = 'Changing…'
+    setTimeout(() => {
+      $('.js-adv-hz').classList.add('ok'); $('.js-hzt').textContent = 'The monitor runs at 165 Hz'
+      $('.js-hzp').textContent = 'Refresh rate raised. Forge checked that the picture is there and kept it.'
+      b.remove(); const mon = $('.js-mon'); mon.classList.remove('warn'); mon.classList.add('fixed'); $('.js-hz').textContent = '165 Hz — the maximum'
+    }, 900)
+  })
+
+  // network: numbers run up to an example result, region bars grow
+  const run = (el, end, ms) => { const t0 = performance.now(); const f = (t) => { const k = Math.min(1, (t - t0) / ms); el.textContent = Math.round(end * (1 - (1 - k) ** 2)); if (k < 1) requestAnimationFrame(f) }; requestAnimationFrame(f) }
+  $('.js-speed').addEventListener('click', (e) => {
+    const b = e.currentTarget; b.classList.add('busy'); b.disabled = true
+    const res = { down: 94, up: 41, ping: 12, load: 38 }
+    Object.entries(res).forEach(([k, v], i) => setTimeout(() => run($(`[data-ns="${k}"]`), v, reduced ? 1 : 1400), reduced ? 0 : i * 250))
+    setTimeout(() => { b.classList.remove('busy'); b.disabled = false; b.textContent = 'Again' }, reduced ? 0 : 2200)
+  })
+  $('.js-ping').addEventListener('click', () => {
+    const rows = $$('.rg', tour), min = Math.min(...rows.map((r) => +r.dataset.ms))
+    rows.forEach((r, i) => setTimeout(() => {
+      const ms = +r.dataset.ms
+      r.classList.toggle('mid', ms > 50 && ms <= 90); r.classList.toggle('far', ms > 90)
+      $('.bar i', r).style.width = `${Math.min(100, ms / 1.4)}%`
+      $('b', r).textContent = `${ms} ms`
+      if (ms === min && !$('.best', r)) { const t = document.createElement('em'); t.className = 'best'; t.textContent = 'nearest'; $('span', r).append(t) }
+    }, reduced ? 0 : i * 180))
+  })
+
+  // tools: pick a game, see its tools as the app lists them; Rust gets a working raid calculator, CS2 and Valorant a crosshair editor
+  const TOOLS = JSON.parse($('#tools-data').textContent)
+  const tgames = DEMO.games.filter((g) => TOOLS[g.id]?.length)
+  const pickTools = (id) => {
+    $$('.js-tgames button', tour).forEach((b) => b.classList.toggle('on', b.dataset.game === id))
+    $('.js-tlist', tour).replaceChildren(...TOOLS[id].map((t) => {
+      const d = document.createElement('div'); d.className = 'tcard'
+      const b = document.createElement('b'); b.textContent = t.title
+      const s = document.createElement('span'); s.textContent = t.text
+      d.append(b, s); return d
+    }))
+    $$('.js-try', tour).forEach((el) => { const f = el.dataset.for.split(' '); el.hidden = !(f.includes(id) || (f.includes('*') && !$$('.js-try', tour).some((x) => x.dataset.for.split(' ').includes(id)))) })
+  }
+  $('.js-tgames', tour).replaceChildren(...tgames.map((g) => {
+    const b = document.createElement('button'); b.dataset.game = g.id
+    const img = document.createElement('img'); img.alt = ''; img.loading = 'lazy'; coverImg(img, g)
+    const n = document.createElement('span'); n.textContent = g.name
+    b.append(img, n); b.addEventListener('click', () => pickTools(g.id)); return b
+  }))
+  const common = $('.js-common', tour)
+  common.append(Object.assign(document.createElement('em'), { textContent: 'For every game:' }), ...(TOOLS.common ?? []).map((t) => Object.assign(document.createElement('span'), { textContent: t.title, title: t.text })))
+  pickTools(tgames.find((g) => g.id === 'cs2') ? 'cs2' : tgames[0].id)
+
+  // crosshair editor
+  const xh = $('.js-xh')
+  const xhState = { len: 5, gap: 3, w: 2, dot: false, c: '#4cff6a' }
+  const xhDraw = () => {
+    const [t, r, b, l] = $$('i', xh), { len, gap, w, dot, c } = xhState, L = len * 3, G = gap * 2, W = w * 1.5
+    const bar = (el, x, y, ww, hh) => Object.assign(el.style, { left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)`, width: `${ww}px`, height: `${hh}px`, background: c })
+    bar(t, -W / 2, -G - L, W, L); bar(b, -W / 2, G, W, L); bar(l, -G - L, -W / 2, L, W); bar(r, G, -W / 2, L, W)
+    const d = $('b', xh); d.hidden = !dot; bar(d, -W / 2, -W / 2, W, W)
+  }
+  $$('[data-xh]', tour).forEach((inp) => inp.addEventListener('input', () => { xhState[inp.dataset.xh] = inp.type === 'checkbox' ? inp.checked : +inp.value; xhDraw() }))
+  $$('.js-xhc button', tour).forEach((b) => b.addEventListener('click', () => { $$('.js-xhc button', tour).forEach((x) => x.classList.toggle('on', x === b)); xhState.c = b.style.getPropertyValue('--c'); xhDraw() }))
+  xhDraw()
+
+  // raid calculator: the app's own numbers (ui/src/data/raid.ts)
+  const RAID = JSON.parse($('#raid-data').textContent)
+  if (RAID.targets) {
+    let target = RAID.targets.find((t) => t.id === 'wall-stone') ?? RAID.targets[0], qty = 1
+    const fmt = (n) => n.toLocaleString(LANG === 'en' ? 'en-US' : 'ru-RU')
+    $('.js-raidbuild').textContent = `data for the Rust build of ${RAID.build}`
+    const draw = () => {
+      $('.js-qty').textContent = qty
+      const rows = Object.entries(RAID.explosives).map(([k, e]) => ({ k, e, n: target.cost[k] * qty, s: target.cost[k] * qty * e.sulfur }))
+      const best = Math.min(...rows.map((r) => r.s))
+      $('.js-exps').replaceChildren(...rows.map((r) => {
+        const d = document.createElement('div'); d.className = `exp${r.s === best ? ' best' : ''}`
+        const b = document.createElement('b'); b.textContent = r.e.short
+        const n = document.createElement('span'); n.className = 'n'; n.textContent = fmt(r.n)
+        const s = document.createElement('small'); s.textContent = `${fmt(r.s)} sulfur${r.s === best ? ' · cheapest' : ''}`
+        d.append(b, n, s); return d
+      }))
+    }
+    const sel = $('.js-target')
+    sel.replaceChildren(...RAID.targets.map((t) => Object.assign(document.createElement('option'), { value: t.id, textContent: t.title, selected: t.id === target.id })))
+    sel.addEventListener('change', () => { target = RAID.targets.find((t) => t.id === sel.value); draw() })
+    $('.js-minus').addEventListener('click', () => { qty = Math.max(1, qty - 1); draw() })
+    $('.js-plus').addEventListener('click', () => { qty = Math.min(20, qty + 1); draw() })
+    draw()
+  }
+
+  // ---------- numbers count up once they are on screen ----------
+  const counter = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return
+    counter.unobserve(e.target)
+    const end = Number(e.target.textContent), t0 = performance.now()
+    if (reduced || !end) return
+    const step = (t) => { const k = Math.min(1, (t - t0) / 1200); e.target.textContent = Math.round(end * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(step) }
+    requestAnimationFrame(step)
+  }), { threshold: .6 })
+  $$('[data-count]').forEach((el) => counter.observe(el))
+
+  // ---------- light follows the mouse on game tiles and cards ----------
+  $$('.game, .card').forEach((el) => el.addEventListener('pointermove', (e) => {
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`); el.style.setProperty('--my', `${e.clientY - r.top}px`)
+    if (el.classList.contains('game') && !reduced) el.style.transform = `perspective(600px) rotateX(${((e.clientY - r.top) / r.height - .5) * -8}deg) rotateY(${((e.clientX - r.left) / r.width - .5) * 8}deg)`
+  }))
+  $$('.game').forEach((el) => el.addEventListener('pointerleave', () => { el.style.transform = '' }))
+
+  // ---------- questions as a chat ----------
+  const log = $('.js-log')
+  const answers = Object.fromEntries([...$('#answers').content.querySelectorAll('p')].map((p) => [p.dataset.a, p.textContent]))
+  let talking = false, asked = false
+  // The first question asks itself when the chat comes into view, so the visitor sees how it works.
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting && !asked) { o.disconnect(); setTimeout(() => { if (!asked) $('.js-qs .q').click() }, 600) } }, { threshold: .5 }).observe(log)
+  $$('.js-qs .q').forEach((b) => b.addEventListener('click', () => {
+    asked = true
+    if (talking) return
+    talking = true
+    b.classList.add('done')
+    const add = (cls, text) => { const m = document.createElement('div'); m.className = `msg ${cls}`; m.textContent = text; log.append(m); log.scrollTop = log.scrollHeight; return m }
+    add('me', b.textContent.trim())
+    if (innerWidth < 980) log.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' })
+    const typing = add('bot typing', '')
+    typing.append(document.createElement('i'), document.createElement('i'), document.createElement('i'))
+    setTimeout(() => { typing.remove(); add('bot', answers[b.dataset.a]); talking = false }, reduced ? 0 : 700 + Math.min(900, answers[b.dataset.a].length * 4))
+  }))
 </script>
 </body>
 </html>
