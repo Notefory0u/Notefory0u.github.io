@@ -49,6 +49,8 @@
   .hero p.lead { color: var(--muted); font-size: clamp(16px, 2vw, 19px); max-width: 680px; margin: 20px auto 0 }
   .hero .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px }
   .hero .meta { color: var(--faint); font-size: 13px; margin-top: 14px }
+  .gift { display: inline-block; margin-top: 18px; padding: 8px 16px; border-radius: 999px; background: rgb(240 165 60 / .12); border: 1px solid rgb(240 165 60 / .35); color: var(--accent); font-weight: 700; font-size: 14px }
+  .gift[hidden] { display: none }
   .shot-main { margin: 48px auto 0; border-radius: 18px; border: 1px solid var(--line2); overflow: hidden; box-shadow: 0 40px 120px -30px rgb(240 165 60 / .25), 0 30px 80px -20px rgb(0 0 0 / .8) }
 
   .games { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 40px }
@@ -143,6 +145,7 @@
       <a class="btn btn-ghost" href="#features">What it does</a>
     </div>
     <div class="meta js-meta">Windows 10 and 11 · free</div>
+    <div class="gift js-gift" hidden></div>
     <img class="shot-main" src="../assets/shots/en/settings.png" alt="Rust graphics settings in Forge: picked for this PC, with before and after previews" width="2560" height="1600">
     <div class="games">
       <span class="chip">Rust</span><span class="chip">Counter-Strike 2</span><span class="chip">PUBG</span><span class="chip">Valorant</span>
@@ -261,11 +264,41 @@
 </footer>
 
 <script>
+  const SB = 'https://qsxqkpemtpuyduudrkmc.supabase.co'
+  const KEY = 'sb_publishable_oTQ3K531pby9WVkWjoAD-A_n05n0Hqi' // the public key, the same as in Forge itself
+  const LANG = document.documentElement.lang === 'en' ? 'en' : 'ru'
+  const rpc = (fn, args) => fetch(`${SB}/rest/v1/rpc/${fn}`, { method: 'POST', keepalive: true, headers: { apikey: KEY, 'content-type': 'application/json' }, body: JSON.stringify(args) })
+  const store = (f) => { try { return f() } catch { return null } }
+
+  // An invite code (?ref=) is kept for 30 days, so a visitor who comes back later still gets it. Where visitors come from:
+  // utm labels and the referring site's domain only, no IP address, no cookie.
+  const q = new URLSearchParams(location.search)
+  const fresh = (q.get('ref') || '').trim().toUpperCase()
+  if (/^[A-Z0-9_-]{3,24}$/.test(fresh)) store(() => localStorage.setItem('forge.ref', JSON.stringify({ code: fresh, at: Date.now() })))
+  const saved = store(() => JSON.parse(localStorage.getItem('forge.ref') || 'null'))
+  const REF = saved && Date.now() - saved.at < 30 * 864e5 ? saved.code : null
+  let from = null
+  try { const r = new URL(document.referrer).hostname; if (r && r !== location.hostname) from = r.replace(/^www\./, '') } catch {}
+  const visit = { p_code: REF, p_source: q.get('utm_source'), p_medium: q.get('utm_medium'), p_campaign: q.get('utm_campaign'), p_referrer: from, p_lang: LANG }
+  const LIVE = location.hostname.endsWith('github.io') // a local preview of the site is not counted
+  if (LIVE && !store(() => sessionStorage.getItem('forge.visit'))) { store(() => sessionStorage.setItem('forge.visit', '1')); rpc('ref_track', { p_event: 'visit', ...visit }).catch(() => {}) }
+  document.querySelectorAll('.js-download').forEach((a) => a.addEventListener('click', () => { if (LIVE) rpc('ref_track', { p_event: 'download', ...visit }).catch(() => {}) }))
+
+  const days = (n) => LANG === 'en' ? `${n} ${n === 1 ? 'day' : 'days'}` : `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'day' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'days' : 'days'}`
+  if (REF) rpc('ref_info', { p_code: REF }).then((r) => r.json()).then((n) => {
+    if (!(n > 0)) return
+    const gift = document.querySelector('.js-gift')
+    gift.textContent = `Invited: ${days(n)} of Forge Pro free, the code works in the app by itself`
+    gift.hidden = false
+  }).catch(() => {})
+
   // The installer link comes from the same manifest Forge itself checks for updates, so the site never lags a release.
+  // With an invite code the file is named ForgeSetup-<version>-ref-<code>.exe: the installer hands the code to Forge.
   const MANIFEST = 'https://qsxqkpemtpuyduudrkmc.supabase.co/storage/v1/object/public/releases/latest.json'
   fetch(MANIFEST, { cache: 'no-store' }).then((r) => r.json()).then((m) => {
     if (!m || !m.url) return
-    document.querySelectorAll('.js-download').forEach((a) => { a.href = m.url; a.removeAttribute('target') })
+    const url = REF ? `${m.url}?download=${encodeURIComponent(`ForgeSetup-${m.version}-ref-${REF}.exe`)}` : m.url
+    document.querySelectorAll('.js-download').forEach((a) => { a.href = url; a.removeAttribute('target') })
     const mb = m.size ? ` · ${(m.size / 1048576).toFixed(0)} MB` : ''
     document.querySelector('.js-meta').textContent = `Version ${m.version}${mb} · Windows 10 and 11 · free`
     document.querySelector('.js-version').textContent = `Version ${m.version}`
